@@ -171,8 +171,8 @@ const StudentDashboard = () => {
       }}
       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group ${
         activeSection === section 
-          ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-800 border-l-4 border-primary shadow-sm" 
-          : "text-gray-900/70 hover:bg-gray-50 hover:text-gray-900"
+          ? "bg-primary/20 text-primary border-l-4 border-primary shadow-sm" 
+          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
       }`}
     >
       <div className="flex items-center gap-3">
@@ -962,27 +962,30 @@ const StudentDashboard = () => {
         style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%231e5128\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/svg%3E")' }}>
       </div>
 
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100 z-50 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <img src={Logo} alt="Logo" className="w-8 h-8 rounded-full" />
-          <span className="font-display font-bold text-gray-800">Tajweed</span>
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl shadow-lg shadow-white/20 border-b border-white/20 z-50 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src={Logo} alt="Logo" className="w-9 h-9 rounded-full ring-2 ring-primary/50" />
+          <div>
+            <span className="font-display font-bold text-gray-800 text-sm">Tajweed</span>
+            <p className="text-[10px] text-gray-500 leading-tight">{student.name}</p>
+          </div>
         </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
           {mobileMenuOpen ? <FontAwesomeIcon icon={faXmark} className="w-6 h-6 text-gray-800" /> : <FontAwesomeIcon icon={faBars} className="w-6 h-6 text-gray-800" />}
         </button>
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-white z-40 pt-16 overflow-y-auto">
+        <div className="md:hidden fixed inset-0 bg-gray-50/80 backdrop-blur-xl z-40 pt-16 overflow-y-auto">
           <div className="p-4">
-            <div className="flex items-center gap-3 p-4 mb-4 bg-gray-50 rounded-xl border border-gray-100">
-              <img src={Logo} alt="Logo" className="w-12 h-12 rounded-full" />
+            <div className="flex items-center gap-3 p-4 mb-4 bg-white/60 backdrop-blur-md rounded-xl border border-gray-200/50">
+              <img src={Logo} alt="Logo" className="w-12 h-12 rounded-full ring-2 ring-primary/50" />
               <div>
                 <p className="text-xs text-primary uppercase tracking-wider">Welcome</p>
-                <p className="text-gray-900 font-display font-semibold">{student.name}</p>
+                <p className="text-gray-800 font-display font-semibold">{student.name}</p>
               </div>
             </div>
-            <nav className="space-y-2">
+            <nav className="space-y-2 bg-white/60 backdrop-blur-md rounded-2xl p-3 border border-gray-200/50">
               {navItems.map((item) => (
                 <SidebarItem key={item.section} icon={item.icon} label={item.label} section={item.section} />
               ))}
@@ -1022,7 +1025,7 @@ const StudentDashboard = () => {
         </button>
       </div>
       
-      <div className="flex-1 p-4 md:p-8 mt-16 md:mt-0 relative z-10">
+      <div className="flex-1 p-4 md:p-8 mt-14 md:mt-0 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
