@@ -11,6 +11,8 @@ import {
   faSearch, faPaperPlane, faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/assets/images/logo.jpeg";
+import QuranImg from "@/assets/images/quran.jpg";
+import NightBg from "@/assets/images/night.jpg";
 import { getScheduleData } from "./scheduleData";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -190,32 +192,40 @@ const StudentDashboard = () => {
       case "profile":
         return (
           <div className="space-y-6 animate-fade-in">
-            <div className="relative overflow-hidden bg-gradient-to-br from-gray-100 via-white to-gray-50 rounded-2xl shadow-lg p-6 text-gray-900 border border-gray-200">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+            <div className="relative overflow-hidden rounded-2xl shadow-lg p-6 text-white border border-white/10 group">
+              <div className="absolute inset-0 rounded-2xl">
+                <img src={QuranImg} alt="Background" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#1e3a8a]/85 via-[#155e75]/80 to-[#6ee7b7]/90"></div>
+                <div className="absolute inset-0 rounded-2xl border-[1px] border-white/20 animate-pulse"></div>
+                <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-[#a78bfa]/30 rounded-full blur-2xl"></div>
+                <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-white/15 rounded-full blur-xl"></div>
+              </div>
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-gray-300 shadow-xl">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#22d3ee] to-[#34d399] rounded-full blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+                  <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-white/30 shadow-2xl">
                     <img src={Logo} alt="Profile" className="w-full h-full object-cover" />
                   </div>
                 </div>
+                <div className="hidden md:block md:w-1/2"></div>
                 <div className="text-center md:text-left flex-1">
-                  <h2 className="text-2xl font-display font-bold text-gray-900">{student.name}</h2>
-                  <p className="text-gray-700 text-sm">Marhala {student.marhala} • Awamu {student.awamu}</p>
+                  <h2 className="text-2xl font-display font-bold text-white">{student.name}</h2>
+                  <p className="text-white/70 text-sm">Marhala {student.marhala} • Awamu {student.awamu}</p>
                   <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-3">
-                    <div className="bg-white/80 rounded-lg px-3 py-1.5 border border-gray-200">
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">Reg</p>
-                      <p className="text-base font-semibold font-display text-gray-800">{student.rgNumber}</p>
+                    <div className="bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/10">
+                      <p className="text-xs text-white/60 uppercase tracking-wider">Reg</p>
+                      <p className="text-base font-semibold font-display text-white">{student.rgNumber}</p>
                     </div>
-                    <div className="bg-white/80 rounded-lg px-3 py-1.5 border border-gray-200">
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">Marhala</p>
-                      <p className="text-base font-semibold font-display text-gray-800">{student.marhala}</p>
+                    <div className="bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/10">
+                      <p className="text-xs text-white/60 uppercase tracking-wider">Marhala</p>
+                      <p className="text-base font-semibold font-display text-white">{student.marhala}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <Card className="bg-white border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all">
+              <Card className="bg-white border border-gray-100 hover:border-[#1e3a8a] hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-gray-100 flex items-center justify-center">
                     <FontAwesomeIcon icon={faBookOpen} className="w-5 h-5 text-primary" />
@@ -224,7 +234,7 @@ const StudentDashboard = () => {
                   <p className="text-xs text-primary">Lessons</p>
                 </CardContent>
               </Card>
-              <Card className="bg-white border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
+              <Card className="bg-white border border-gray-100 hover:border-[#1d4ed8] hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-blue-100 flex items-center justify-center">
                     <FontAwesomeIcon icon={faClipboardList} className="w-5 h-5 text-blue-600" />
@@ -233,7 +243,7 @@ const StudentDashboard = () => {
                   <p className="text-xs text-blue-600">Quizzes</p>
                 </CardContent>
               </Card>
-              <Card className="bg-white border border-purple-100 hover:border-purple-300 hover:shadow-md transition-all">
+              <Card className="bg-white border border-gray-100 hover:border-[#7c3aed] hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-purple-100 flex items-center justify-center">
                     <FontAwesomeIcon icon={faChartBar} className="w-5 h-5 text-purple-600" />
@@ -242,7 +252,7 @@ const StudentDashboard = () => {
                   <p className="text-xs text-purple-600">Exam</p>
                 </CardContent>
               </Card>
-              <Card className="bg-white border border-amber-100 hover:border-amber-300 hover:shadow-md transition-all">
+              <Card className="bg-white border border-gray-100 hover:border-amber-500 hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-amber-100 flex items-center justify-center">
                     <FontAwesomeIcon icon={faWandMagicSparkles} className="w-5 h-5 text-amber-600" />
@@ -651,36 +661,48 @@ const StudentDashboard = () => {
         );
       }
 
-      case "about": {
+case "about": {
         return (
           <div className="space-y-8 animate-fade-in">
-            <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 rounded-3xl p-8 border border-gray-200 shadow-xl">
-              <div className="absolute top-0 right-0 w-72 h-72 bg-primary/20/30 rounded-full -translate-y-1/3 translate-x-1/3 blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/20/30 rounded-full translate-y-1/3 -translate-x-1/3 blur-2xl"></div>
+            <div className="relative overflow-hidden rounded-3xl p-8 border border-white/10 shadow-2xl shadow-emerald-900/40">
+              <div className="absolute inset-0">
+                <img src={NightBg} alt="Night sky" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#111827]/85 via-[#0f2f25]/80 to-[#047857]/90"></div>
+              </div>
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-4 right-8 w-1.5 h-1.5 bg-white/30 rounded-full"></div>
+                <div className="absolute top-12 right-20 w-1 bg-white/20 rounded-full"></div>
+                <div className="absolute top-8 right-32 w-1.5 h-1.5 bg-white/15 rounded-full"></div>
+                <div className="absolute bottom-16 left-8 w-1 bg-white/25 rounded-full"></div>
+                <div className="absolute bottom-24 left-20 w-1.5 h-1.5 bg-white/15 rounded-full"></div>
+                <div className="absolute bottom-12 left-1/3 w-1 bg-white/20 rounded-full"></div>
+                <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-white/10 rounded-full"></div>
+                <div className="absolute top-20 left-1/2 w-1.5 h-1.5 bg-white/15 rounded-full"></div>
+                <svg className="absolute top-8 left-16 w-6 h-6 text-white/25" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" clipRule="evenodd" />
+                </svg>
+                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/40 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/30 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+              </div>
               
               <div className="relative z-10 flex flex-col items-center text-center">
                 <div className="relative w-32 h-32 mb-8">
-                <div className="absolute inset-0 bg-primary rounded-full animate-pulse"></div>
-                <div className="absolute inset-2 bg-gray-400 rounded-full"></div>
-                <div className="absolute inset-4 bg-gray-300 rounded-full"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
-                    <img src={Logo} alt="Logo" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-emerald-500/30 rounded-full blur-xl animate-pulse"></div>
+                  <div className="absolute inset-2 bg-[#1f2937] rounded-full"></div>
+                  <div className="absolute inset-4 bg-[#111827] rounded-full"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/30 shadow-lg shadow-emerald-500/20">
+                      <img src={Logo} alt="Logo" className="w-full h-full object-cover" />
+                    </div>
                   </div>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-amber-400 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                  </svg>
-                </div>
-              </div>
+                 
+                <h2 className="text-lg font-sans font-semibold text-white tracking-wide leading-relaxed text-center px-6 py-4">MUONGOZO WA DARSA ZA AHKAAM AT-TAJWĪD</h2>
                 
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 tracking-wide">MUONGOZO WA DARSA ZA AHKAAM AT-TAJWĪD</h2>
-                
-                <div className="mt-6 flex items-center gap-4">
-                  <span className="px-4 py-2 bg-primary text-white font-display font-semibold rounded-full">AWAMU YA 5</span>
-                  <span className="text-gray-700 font-body">|</span>
-                  <span className="text-gray-700 font-display font-semibold">2026</span>
+                <div className="mt-2 flex items-center gap-4">
+                  <span className="px-4 py-2 bg-emerald-500/80 text-white font-sans font-medium rounded-full backdrop-blur-sm text-sm">AWAMU YA 5</span>
+                  <span className="text-gray-500 font-sans text-sm">|</span>
+                  <span className="text-gray-500 font-sans font-medium text-sm">2026</span>
                 </div>
               </div>
             </div>
@@ -1029,14 +1051,14 @@ const StudentDashboard = () => {
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
-              {activeSection === "profile" && "Dashboard"}
+              {activeSection === "profile" && ""}
               {activeSection === "lessons" && "Lessons"}
               {activeSection === "activities" && "Activities"}
               {activeSection === "results" && "Results"}
               {activeSection === "teachers" && "Ask Teacher"}
               {activeSection === "about" && "About"}
             </h1>
-            <p className="text-gray-700/70 font-body mt-1">Marhala {student.marhala} • Awamu {student.awamu}</p>
+            <p className="text-gray-700/70 font-body mt-1"></p>
           </div>
           
           {renderContent()}

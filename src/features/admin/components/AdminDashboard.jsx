@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Select } from "@/components/ui/select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faUsers, faBookOpen, faCog, faGraduationCap, 
@@ -346,6 +347,10 @@ const AdminDashboard = () => {
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [showAddTeacher, setShowAddTeacher] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [marhalaFilter, setMarhalaFilter] = useState("all");
+  const [showNewStudentPassword, setShowNewStudentPassword] = useState(false);
+  const [showNewTeacherPassword, setShowNewTeacherPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   
   const [newStudent, setNewStudent] = useState({
     name: "", phoneNumber: "", gender: "", marhala: "2", password: ""
@@ -360,6 +365,10 @@ const AdminDashboard = () => {
   const [resetUser, setResetUser] = useState(null);
   const [resetNewPassword, setResetNewPassword] = useState("");
   const [deleteDialog, setDeleteDialog] = useState({ open: false, type: "", item: null });
+  const [showEditStudent, setShowEditStudent] = useState(false);
+  const [showEditTeacher, setShowEditTeacher] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [editingTeacher, setEditingTeacher] = useState(null);
 
   const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem("users") || "[]"));
   const [teachers, setTeachers] = useState(() => JSON.parse(localStorage.getItem("teachers") || "[]"));
@@ -439,6 +448,7 @@ const AdminDashboard = () => {
 
     const updatedUsers = [...users, student];
     localStorage.setItem("users", JSON.stringify(updatedUsers));
+    setUsers(updatedUsers);
     setShowAddStudent(false);
     setNewStudent({ name: "", phoneNumber: "", gender: "", marhala: "2", password: "" });
     toast.success(`Student added successfully! ${rgNumber}`);
@@ -447,6 +457,12 @@ const AdminDashboard = () => {
   const addTeacher = async () => {
     if (!newTeacher.name || !newTeacher.phone || !newTeacher.gender || !newTeacher.password) {
       toast.error("Please fill in all fields");
+      return;
+    }
+
+    const existingTeacher = teachers.find(t => t.phone === newTeacher.phone);
+    if (existingTeacher) {
+      toast.error("Teacher with this phone number already exists");
       return;
     }
 
@@ -463,9 +479,90 @@ const AdminDashboard = () => {
 
     const updatedTeachers = [...teachers, teacher];
     localStorage.setItem("teachers", JSON.stringify(updatedTeachers));
+    setTeachers(updatedTeachers);
     setShowAddTeacher(false);
     setNewTeacher({ name: "", email: "", phone: "", gender: "", password: "", marhalat: [] });
     toast.success("Teacher added successfully!");
+  };
+
+  const handleEditStudent = (student) => {
+    setEditingStudent({
+      originalRgNumber: student.rgNumber,
+      rgNumber: student.rgNumber,
+      name: student.name,
+      phoneNumber: student.phoneNumber || "",
+      gender: student.gender || "A",
+      marhala: student.marhala?.toString() || "2",
+      password: ""
+    });
+    setShowEditStudent(true);
+  };
+
+  const handleEditTeacher = (teacher) => {
+    setEditingTeacher({
+      originalPhone: teacher.phone,
+      phone: teacher.phone,
+      name: teacher.name,
+      email: teacher.email || "",
+      gender: teacher.gender || "A",
+      marhalat: teacher.marhalat || [1,2,3,4],
+      password: ""
+    });
+    setShowEditTeacher(true);
+  };
+
+  const updateStudent = async () => {
+    if (!editingStudent.name || !editingStudent.phoneNumber) {
+      toast.error("Please fill in required fields");
+      return;
+    }
+    let updates = { name: editingStudent.name, phoneNumber: editingStudent.phoneNumber, gender: editingStudent.gender, marhala: parseInt(editingStudent.marhala) };
+    if (editingStudent.password) {
+      updates.password = await hashPassword(editingStudent.password);
+    }
+    const originalRg = editingStudent.originalRgNumber || editingStudent.rgNumber;
+    const updated = users.map(u => 
+      u.rgNumber === originalRg ? { ...u, ...updates } : u
+    );
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser && currentUser.rgNumber === originalRg) {
+      localStorage.setItem("currentUser", JSON.stringify({ ...currentUser, ...updates }));
+    }
+    localStorage.setItem("users", JSON.stringify(updated));
+    setUsers(updated);
+    setShowEditStudent(false);
+    setEditingStudent(null);
+    toast.success("Student updated successfully!");
+  };
+
+  const updateTeacher = async () => {
+    if (!editingTeacher.name || !editingTeacher.phone) {
+      toast.error("Please fill in required fields");
+      return;
+    }
+    const originalPhone = editingTeacher.originalPhone || editingTeacher.phone;
+    const existingTeacher = teachers.find(t => t.phone === editingTeacher.phone && t.phone !== originalPhone);
+    if (existingTeacher) {
+      toast.error("Teacher with this phone number already exists");
+      return;
+    }
+    let updates = { name: editingTeacher.name, phone: editingTeacher.phone, gender: editingTeacher.gender, marhalat: editingTeacher.marhalat };
+    if (editingTeacher.password) {
+      updates.password = await hashPassword(editingTeacher.password);
+    }
+    updates.username = editingTeacher.phone;
+    const updated = teachers.map(t => 
+      t.phone === originalPhone ? { ...t, ...updates } : t
+    );
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser && currentUser.phone === originalPhone) {
+      localStorage.setItem("currentUser", JSON.stringify({ ...currentUser, ...updates }));
+    }
+    localStorage.setItem("teachers", JSON.stringify(updated));
+    setTeachers(updated);
+    setShowEditTeacher(false);
+    setEditingTeacher(null);
+    toast.success("Teacher updated successfully!");
   };
 
   const deleteUser = (rgNumber, name) => {
@@ -533,10 +630,12 @@ const AdminDashboard = () => {
     4: ["Aḥkām al-Mudūd", "Al-Waqf wa al-Ibtidā'", "Bāb al-Maqāṭi'", "Bāb at-Tā'āt", "Hamzat al-Waṣl", "Al-Ishmām wa ar-Rawm", "Al-Adā'"]
   };
 
-  const filteredStudents = users.filter(u => 
-    u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.rgNumber?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = users.filter(u => {
+    const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.rgNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesMarhala = marhalaFilter === "all" || u.marhala?.toString() === marhalaFilter;
+    return matchesSearch && matchesMarhala;
+  });
 
   const filteredTeachers = teachers.filter(t => 
     t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -567,7 +666,7 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activeSection) {
-      case "students":
+case "students":
         return (
           <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between flex-wrap gap-4">
@@ -594,60 +693,63 @@ const AdminDashboard = () => {
                       <button type="button" onClick={() => setNewStudent({...newStudent, gender: "A"})} className={`flex-1 p-2 rounded border ${newStudent.gender === "A" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Male</button>
                       <button type="button" onClick={() => setNewStudent({...newStudent, gender: "B"})} className={`flex-1 p-2 rounded border ${newStudent.gender === "B" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Female</button>
                     </div>
-                    <Input type="password" placeholder="Password" value={newStudent.password} onChange={(e) => setNewStudent({...newStudent, password: e.target.value})} />
+                    <div className="relative">
+                      <Input type={showNewStudentPassword ? "text" : "password"} placeholder="Password" value={newStudent.password} onChange={(e) => setNewStudent({...newStudent, password: e.target.value})} />
+                      <button type="button" onClick={() => setShowNewStudentPassword(!showNewStudentPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <FontAwesomeIcon icon={showNewStudentPassword ? faEye : faEye} className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                   <Button onClick={addStudent} className="bg-primary hover:bg-gray-800">Save</Button>
                 </CardContent>
               </Card>
             )}
 
-            <div className="relative">
-              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input 
-                className="pl-10" 
-                placeholder="Search by name or number..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+<div className="flex gap-2">
+              <div className="relative flex-1">
+                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input 
+                  className="pl-10" 
+                  placeholder="Search by name or number..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Select 
+                className="w-32"
+                value={marhalaFilter}
+                onChange={(e) => setMarhalaFilter(e.target.value)}
+              >
+                <option value="all">All Marhala</option>
+                <option value="1">Marhala 1</option>
+                <option value="2">Marhala 2</option>
+                <option value="3">Marhala 3</option>
+                <option value="4">Marhala 4</option>
+              </Select>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="text-left p-4 font-display text-sm text-gray-800">Reg Number</th>
-                    <th className="text-left p-4 font-display text-sm text-gray-800">Name</th>
-                    <th className="text-left p-4 font-display text-sm text-gray-800">Marhala</th>
-                    <th className="text-left p-4 font-display text-sm text-gray-800">Gender</th>
-                    <th className="text-left p-4 font-display text-sm text-gray-800">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStudents.map((student, idx) => (
-                    <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50/50">
-                      <td className="p-4 font-body text-gray-900">{student.rgNumber}</td>
-                      <td className="p-4 font-body text-gray-900">{student.name}</td>
-                      <td className="p-4 font-body text-gray-900">Marhala {student.marhala}</td>
-                      <td className="p-4 font-body text-gray-900">{student.gender === "A" ? "M" : "F"}</td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <button onClick={() => { setResetUser(student); setShowResetModal(true); }} className="text-blue-500 hover:text-blue-700" title="Reset Password">
-                            <FontAwesomeIcon icon={faUnlock} className="w-5 h-5" />
-                          </button>
-                          <button onClick={() => deleteUser(student.rgNumber, student.name)} className="text-red-500 hover:text-red-700" title="Delete">
-                            <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {filteredStudents.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="p-8 text-center text-gray-500">No students found</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="space-y-3">
+              {filteredStudents.map((student, idx) => (
+                <div key={idx} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-display font-semibold text-gray-900">{student.name}</p>
+                      <p className="text-sm text-gray-500">{student.rgNumber} • Marhala {student.marhala} • {student.gender === "A" ? "M" : "F"}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => handleEditStudent(student)} className="text-primary hover:text-gray-800 p-2" title="Edit">
+                        <FontAwesomeIcon icon={faPenToSquare} className="w-5 h-5" />
+                      </button>
+                      <button onClick={() => deleteUser(student.rgNumber, student.name)} className="text-red-500 hover:text-red-700 p-2" title="Delete">
+                        <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {filteredStudents.length === 0 && (
+                <p className="p-8 text-center text-gray-500">No students found</p>
+              )}
             </div>
           </div>
         );
@@ -674,7 +776,12 @@ const AdminDashboard = () => {
                       <button type="button" onClick={() => setNewTeacher({...newTeacher, gender: "A"})} className={`flex-1 p-2 rounded border ${newTeacher.gender === "A" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Male</button>
                       <button type="button" onClick={() => setNewTeacher({...newTeacher, gender: "B"})} className={`flex-1 p-2 rounded border ${newTeacher.gender === "B" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Female</button>
                     </div>
-                    <Input type="password" placeholder="Password" value={newTeacher.password} onChange={(e) => setNewTeacher({...newTeacher, password: e.target.value})} />
+                    <div className="relative">
+                      <Input type={showNewTeacherPassword ? "text" : "password"} placeholder="Password" value={newTeacher.password} onChange={(e) => setNewTeacher({...newTeacher, password: e.target.value})} />
+                      <button type="button" onClick={() => setShowNewTeacherPassword(!showNewTeacherPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                   <Button onClick={addTeacher} className="bg-primary hover:bg-gray-800">Save</Button>
                 </CardContent>
@@ -697,9 +804,9 @@ const AdminDashboard = () => {
                     <p className="text-sm text-gray-700 mb-2">Marhala: {teacher.marhalat?.join(", ") || "1-4"}</p>
                     <p className="text-sm text-gray-700 mb-4">Phone: {teacher.phone}</p>
                     <div className="flex gap-2">
-                      <Button onClick={() => { setResetUser(teacher); setShowResetModal(true); }} variant="outline" size="sm" className="flex-1">
-                        <FontAwesomeIcon icon={faUnlock} className="w-4 h-4 mr-1" />
-                        Reset
+                      <Button onClick={() => handleEditTeacher(teacher)} variant="outline" size="sm" className="flex-1">
+                        <FontAwesomeIcon icon={faPenToSquare} className="w-4 h-4 mr-1" />
+                        Edit
                       </Button>
                       <Button onClick={() => deleteTeacher(teacher.phone, teacher.name)} variant="destructive" size="sm">
                         <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
@@ -765,35 +872,44 @@ const AdminDashboard = () => {
               <CardContent className="p-6 space-y-4">
                 <div>
                   <label className="text-sm font-medium text-gray-800">Current Password</label>
-                  <Input 
-                    type="password" 
-                    placeholder="Current password" 
-                    className="mt-2"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                  />
+                  <div className="relative mt-2">
+                    <Input 
+                      type={showResetPassword ? "text" : "password"} 
+                      placeholder="Current password" 
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                    <button type="button" onClick={() => setShowResetPassword(!showResetPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-800">New Password</label>
-                  <Input 
-                    type="password" 
-                    placeholder="New password" 
-                    className="mt-2"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
-                </div>
+                  <div className="relative mt-2">
+                    <Input 
+                      type={showResetPassword ? "text" : "password"} 
+                      placeholder="New password" 
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </div>
+</div>
                 <div>
                   <label className="text-sm font-medium text-gray-800">Confirm Password</label>
-                  <Input 
-                    type="password" 
-                    placeholder="Confirm password" 
-                    className="mt-2"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
+                  <div className="relative mt-2">
+                    <Input 
+                      type={showResetPassword ? "text" : "password"} 
+                      placeholder="Confirm password" 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <button type="button" onClick={() => setShowResetPassword(!showResetPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-                <Button 
+                <Button
                   onClick={handlePasswordChange}
                   className="bg-primary hover:bg-gray-800"
                 >
@@ -834,7 +950,7 @@ const AdminDashboard = () => {
               </div>
               <div>
                 <p className="text-xs text-primary uppercase">Admin</p>
-                <p className="text-gray-900 font-display font-semibold">Mratibu</p>
+                <p className="text-gray-900 font-display font-semibold">Admin</p>
               </div>
             </div>
             <nav className="space-y-2">
@@ -857,7 +973,7 @@ const AdminDashboard = () => {
           </div>
           <div>
             <p className="text-xs text-primary uppercase">Admin</p>
-            <p className="text-gray-900 font-display font-semibold truncate">Mratibu</p>
+            <p className="text-gray-900 font-display font-semibold truncate">Admin</p>
           </div>
         </div>
         
@@ -875,16 +991,177 @@ const AdminDashboard = () => {
       
       <div className="flex-1 p-4 md:p-8 mt-16 md:mt-0 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
-              Dashboard ya Mratibu
-            </h1>
-            <p className="text-gray-700/70 font-body mt-1">Simamia mfumo wote</p>
-          </div>
+<div className="mb-6 md:mb-8"></div>
           
           {renderContent()}
         </div>
       </div>
+
+      {showEditStudent && editingStudent && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-display font-bold text-gray-900">Edit Student</h3>
+              <button onClick={() => { setShowEditStudent(false); setEditingStudent(null); }} className="text-gray-500 hover:text-gray-700">
+                <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-800">Name</label>
+                <Input 
+                  value={editingStudent.name}
+                  onChange={(e) => setEditingStudent({...editingStudent, name: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Phone Number</label>
+                <Input 
+                  value={editingStudent.phoneNumber}
+                  onChange={(e) => setEditingStudent({...editingStudent, phoneNumber: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Password (leave empty to keep current)</label>
+                <Input 
+                  type="text"
+                  value={editingStudent.password || ""}
+                  onChange={(e) => setEditingStudent({...editingStudent, password: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Gender</label>
+                <div className="flex gap-2 mt-1">
+                  <button 
+                    type="button" 
+                    onClick={() => setEditingStudent({...editingStudent, gender: "A"})} 
+                    className={`flex-1 p-2 rounded border ${editingStudent.gender === "A" ? "bg-primary/20 border-primary" : "border-gray-200"}`}
+                  >
+                    Male
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setEditingStudent({...editingStudent, gender: "B"})} 
+                    className={`flex-1 p-2 rounded border ${editingStudent.gender === "B" ? "bg-primary/20 border-primary" : "border-gray-200"}`}
+                  >
+                    Female
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Marhala</label>
+                <select 
+                  className="w-full mt-1 p-2 border border-gray-200 rounded-lg"
+                  value={editingStudent.marhala}
+                  onChange={(e) => setEditingStudent({...editingStudent, marhala: e.target.value})}
+                >
+                  <option value="2">Marhala 2</option>
+                  <option value="3">Marhala 3</option>
+                  <option value="4">Marhala 4</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-6">
+              <Button onClick={updateStudent} className="flex-1 bg-primary hover:bg-gray-800">
+                Save Changes
+              </Button>
+              <Button onClick={() => { setShowEditStudent(false); setEditingStudent(null); }} variant="outline" className="flex-1">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showEditTeacher && editingTeacher && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-display font-bold text-gray-900">Edit Teacher</h3>
+              <button onClick={() => { setShowEditTeacher(false); setEditingTeacher(null); }} className="text-gray-500 hover:text-gray-700">
+                <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-800">Name</label>
+                <Input 
+                  value={editingTeacher.name}
+                  onChange={(e) => setEditingTeacher({...editingTeacher, name: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Phone Number</label>
+                <Input 
+                  value={editingTeacher.phone}
+                  onChange={(e) => setEditingTeacher({...editingTeacher, phone: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Password (leave empty to keep current)</label>
+                <Input 
+                  type="text"
+                  value={editingTeacher.password || ""}
+                  onChange={(e) => setEditingTeacher({...editingTeacher, password: e.target.value})}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Gender</label>
+                <div className="flex gap-2 mt-1">
+                  <button 
+                    type="button" 
+                    onClick={() => setEditingTeacher({...editingTeacher, gender: "A"})} 
+                    className={`flex-1 p-2 rounded border ${editingTeacher.gender === "A" ? "bg-primary/20 border-primary" : "border-gray-200"}`}
+                  >
+                    Male
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setEditingTeacher({...editingTeacher, gender: "B"})} 
+                    className={`flex-1 p-2 rounded border ${editingTeacher.gender === "B" ? "bg-primary/20 border-primary" : "border-gray-200"}`}
+                  >
+                    Female
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-800">Marhala (select multiple)</label>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {[1,2,3,4].map(m => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => {
+                        const marhalat = editingTeacher.marhalat.includes(m)
+                          ? editingTeacher.marhalat.filter(x => x !== m)
+                          : [...editingTeacher.marhalat, m];
+                        setEditingTeacher({...editingTeacher, marhalat});
+                      }}
+                      className={`p-2 rounded border ${editingTeacher.marhalat.includes(m) ? "bg-primary/20 border-primary" : "border-gray-200"}`}
+                    >
+                      Marhala {m}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-6">
+              <Button onClick={updateTeacher} className="flex-1 bg-primary hover:bg-gray-800">
+                Save Changes
+              </Button>
+              <Button onClick={() => { setShowEditTeacher(false); setEditingTeacher(null); }} variant="outline" className="flex-1">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showResetModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -896,13 +1173,17 @@ const AdminDashboard = () => {
               </button>
             </div>
             <p className="text-gray-700 mb-4">Mtoa: <span className="font-semibold">{resetUser?.name}</span></p>
-            <Input 
-              type="password" 
-              placeholder="Nenosiri mpya" 
-              value={resetNewPassword}
-              onChange={(e) => setResetNewPassword(e.target.value)}
-              className="mb-4"
-            />
+            <div className="relative">
+              <Input 
+                type={showResetPassword ? "text" : "password"} 
+                placeholder="Nenosiri mpya" 
+                value={resetNewPassword}
+                onChange={(e) => setResetNewPassword(e.target.value)}
+              />
+              <button type="button" onClick={() => setShowResetPassword(!showResetPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
+              </button>
+            </div>
             <div className="flex gap-2">
               <Button onClick={handleResetUserPassword} className="flex-1 bg-primary hover:bg-gray-800">
                 Hifadhi

@@ -174,7 +174,7 @@ const ActivityPage = () => {
 
             <Button onClick={() => navigate("/student")} className="w-full bg-primary">
               <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              Back
             </Button>
           </CardContent>
         </Card>
