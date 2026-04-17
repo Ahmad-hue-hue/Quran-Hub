@@ -1,5 +1,6 @@
 import React from "react";
-import { X } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Dialog = ({ open, onOpenChange, children }) => {
   if (!open) return null;

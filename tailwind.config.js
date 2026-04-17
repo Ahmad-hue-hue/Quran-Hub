@@ -8,24 +8,38 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ["Cinzel", "serif"],
-        body: ["Quicksand", "sans-serif"],
+        display: ["Plus Jakarta Sans", "sans-serif"],
+        body: ["Plus Jakarta Sans", "sans-serif"],
+        sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
       },
       colors: {
+        background: "#FCFCFC",
+        foreground: "#111827",
+        card: "#FFFFFF",
         primary: {
-          DEFAULT: "#1e5128",
+          DEFAULT: "#059669",
+          dark: "#047857",
           foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "#4e9f3d",
+          DEFAULT: "#111827",
           foreground: "#ffffff",
         },
         accent: {
-          DEFAULT: "#d8e9a8",
-          foreground: "#1e5128",
+          DEFAULT: "#111827",
+          foreground: "#ffffff",
         },
-        background: "#ffffff",
-        foreground: "#1e5128",
+        muted: {
+          DEFAULT: "#6B7280",
+          foreground: "#111827",
+        },
+        destructive: {
+          DEFAULT: "#DC2626",
+          foreground: "#ffffff",
+        },
+        border: "#E5E7EB",
+        input: "#E5E7EB",
+        ring: "#059669",
         glass: {
           100: "rgba(255, 255, 255, 0.1)",
           200: "rgba(255, 255, 255, 0.2)",

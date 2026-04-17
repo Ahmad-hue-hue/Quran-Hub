@@ -3,21 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
-  Users, BookOpen, Settings, GraduationCap, 
-  Plus, Trash2, Edit, Unlock, Lock,
-  LogOut, Menu, X, CheckCircle, Search,
-  UserPlus, ClipboardList, BarChart3, Eye, Save, XCircle, AlertTriangle
-} from "lucide-react";
+  faUsers, faBookOpen, faCog, faGraduationCap, 
+  faPlus, faTrash, faEdit, faUnlock, faLock,
+  faSignOutAlt, faBars, faXmark, faCheckCircle, faSearch,
+  faUserPlus, faClipboardList, faChartBar, faEye, faSave, faCircleXmark, faTriangleExclamation,
+  faChevronRight, faRightFromBracket, faCircleQuestion, faEnvelope, faPhone, faBell, faCircleCheck,
+  faPenToSquare, faArrowLeft, faCircleExclamation
+} from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/assets/images/logo.jpeg";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { generateRgNumber, hashPassword } from "../../auth/utils/authUtils";
 
-const ActivityCreator = () => {
-  const activities = JSON.parse(localStorage.getItem("activities") || "[]");
+const ActivityCreator = ({ activities, setActivities }) => {
   const submissions = JSON.parse(localStorage.getItem("submissions") || "[]");
-  const toast = useToast();
+  
   const [showCreate, setShowCreate] = useState(false);
   const [showView, setShowView] = useState(null);
   const [newActivity, setNewActivity] = useState({
@@ -64,13 +66,15 @@ const ActivityCreator = () => {
       marhala: parseInt(newActivity.marhala),
       createdAt: new Date().toISOString()
     };
-    localStorage.setItem("activities", JSON.stringify([...activities, activity]));
+    const updated = [...activities, activity];
+    localStorage.setItem("activities", JSON.stringify(updated));
+    setActivities(updated);
     setShowCreate(false);
     setNewActivity({
       marhala: "1", type: "quiz", title: "", description: "",
       deadline: "", duration: 30, passingScore: 70, questions: []
     });
-    toast("Activity added successfully!", "success");
+    toast.success("Activity added successfully!");
   };
 
   const deleteActivity = (id, title = "") => {
@@ -92,7 +96,7 @@ const ActivityCreator = () => {
     updated[subIdx].score = score;
     updated[subIdx].status = "graded";
     localStorage.setItem("submissions", JSON.stringify(updated));
-    toast("Alipata " + score + "%", "success");
+    toast.success("Alipata " + score + "%");
   };
 
   const viewSubmissions = (activityId) => {
@@ -102,22 +106,22 @@ const ActivityCreator = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h3 className="text-2xl font-display font-bold text-emerald-900">Learning Activities</h3>
-        <Button onClick={() => setShowCreate(!showCreate)} className="bg-emerald-600 hover:bg-emerald-700">
-          <Plus className="w-4 h-4 mr-2" />
+        <h3 className="text-2xl font-display font-bold text-gray-900">Learning Activities</h3>
+        <Button onClick={() => setShowCreate(!showCreate)} className="bg-primary hover:bg-gray-800">
+          <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2" />
           Create Activity
         </Button>
       </div>
 
       {showCreate && (
-        <Card className="bg-emerald-50 border-emerald-200">
+        <Card className="bg-gray-50 border-gray-200">
           <CardHeader>
-            <CardTitle className="text-emerald-900">New Activity</CardTitle>
+            <CardTitle className="text-gray-900">New Activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <select 
-                className="p-2 border border-emerald-200 rounded-lg"
+                className="p-2 border border-gray-200 rounded-lg"
                 value={newActivity.marhala}
                 onChange={(e) => setNewActivity({...newActivity, marhala: e.target.value})}
               >
@@ -127,7 +131,7 @@ const ActivityCreator = () => {
                 <option value="4">Marhala 4</option>
               </select>
               <select 
-                className="p-2 border border-emerald-200 rounded-lg"
+                className="p-2 border border-gray-200 rounded-lg"
                 value={newActivity.type}
                 onChange={(e) => setNewActivity({...newActivity, type: e.target.value})}
               >
@@ -163,20 +167,20 @@ const ActivityCreator = () => {
               onChange={(e) => setNewActivity({...newActivity, deadline: e.target.value})}
             />
 
-            <div className="border-t border-emerald-200 pt-4">
-              <h4 className="font-display font-semibold text-emerald-900 mb-4">Questions ({newActivity.questions.length})</h4>
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="font-display font-semibold text-gray-900 mb-4">Questions ({newActivity.questions.length})</h4>
               {newActivity.questions.map((q, idx) => (
                 <div key={idx} className="flex items-center justify-between bg-white p-3 rounded-lg mb-2">
-                  <span className="text-emerald-800">{idx + 1}. {q.question.slice(0, 50)}...</span>
+                  <span className="text-gray-800">{idx + 1}. {q.question.slice(0, 50)}...</span>
                   <button onClick={() => removeQuestion(idx)} className="text-red-500">
-                    <XCircle className="w-4 h-4" />
+                    <FontAwesomeIcon icon={faCircleXmark} className="w-4 h-4" />
                   </button>
                 </div>
               ))}
               
               <div className="bg-white p-4 rounded-lg border border-gray-200">
                 <select 
-                  className="p-2 border border-emerald-200 rounded-lg mb-2"
+                  className="p-2 border border-gray-200 rounded-lg mb-2"
                   value={newQuestion.type}
                   onChange={(e) => setNewQuestion({...newQuestion, type: e.target.value, question: "", options: ["", "", "", ""]})}
                 >
@@ -252,8 +256,8 @@ const ActivityCreator = () => {
               </div>
             </div>
 
-            <Button onClick={saveActivity} className="bg-emerald-600 hover:bg-emerald-700">
-              <Save className="w-4 h-4 mr-2" />
+            <Button onClick={saveActivity} className="bg-primary hover:bg-gray-800">
+              <FontAwesomeIcon icon={faSave} className="w-4 h-4 mr-2" />
               Save Activity
             </Button>
           </CardContent>
@@ -261,7 +265,7 @@ const ActivityCreator = () => {
       )}
 
       <div className="space-y-4">
-        <h4 className="font-display font-semibold text-emerald-900">Existing Activities</h4>
+        <h4 className="font-display font-semibold text-gray-900">Existing Activities</h4>
         {activities.map((activity, idx) => {
           const subs = submissions.filter(s => s.activityId === activity.id);
           return (
@@ -269,8 +273,8 @@ const ActivityCreator = () => {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-display font-semibold text-emerald-900">{activity.title}</p>
-                    <p className="text-sm text-emerald-600">
+                    <p className="font-display font-semibold text-gray-900">{activity.title}</p>
+                    <p className="text-sm text-primary">
                       Marhala {activity.marhala} • {activity.type === "quiz" ? "Quiz" : "Exam"} • 
                       Questions: {activity.questions?.length || 0}
                     </p>
@@ -278,12 +282,12 @@ const ActivityCreator = () => {
                   <div className="flex gap-2">
                     {subs.length > 0 && (
                       <Button onClick={() => viewSubmissions(activity.id)} size="sm" className="bg-blue-600">
-                        <Eye className="w-4 h-4 mr-1" />
+                        <FontAwesomeIcon icon={faEye} className="w-4 h-4 mr-1" />
                         Majibu ({subs.length})
                       </Button>
                     )}
                     <Button onClick={() => handleDeleteActivity(activity.id)} variant="destructive" size="sm">
-                      <Trash2 className="w-4 h-4" />
+                      <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -308,15 +312,15 @@ const ActivityCreator = () => {
           <CardContent>
             {submissions.filter(s => s.activityId === showView).map((sub, idx) => (
               <div key={idx} className="bg-white p-4 rounded-lg mb-2">
-                <p className="font-medium text-emerald-900">{sub.studentId}</p>
-                <p className="text-sm text-emerald-600 mb-2">
+                <p className="font-medium text-gray-900">{sub.studentId}</p>
+                <p className="text-sm text-primary mb-2">
                   Alijibu: {JSON.stringify(sub.answers)}
                 </p>
                 {sub.status === "graded" ? (
-                  <p className="text-emerald-700 font-semibold">Alipata: {sub.score}%</p>
+                  <p className="text-gray-700 font-semibold">Alipata: {sub.score}%</p>
                 ) : (
                   <div className="flex gap-2 mt-2">
-                    <Button onClick={() => gradeSubmission(idx, 100)} size="sm" className="bg-emerald-600">100%</Button>
+                    <Button onClick={() => gradeSubmission(idx, 100)} size="sm" className="bg-primary">100%</Button>
                     <Button onClick={() => gradeSubmission(idx, 70)} size="sm" className="bg-blue-600">70%</Button>
                     <Button onClick={() => gradeSubmission(idx, 50)} size="sm" className="bg-orange-600">50%</Button>
                     <Button onClick={() => gradeSubmission(idx, 0)} size="sm" variant="destructive">0%</Button>
@@ -336,7 +340,7 @@ const ActivityCreator = () => {
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const toast = useToast();
+  
   const [activeSection, setActiveSection] = useState("students");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
@@ -357,9 +361,10 @@ const AdminDashboard = () => {
   const [resetNewPassword, setResetNewPassword] = useState("");
   const [deleteDialog, setDeleteDialog] = useState({ open: false, type: "", item: null });
 
-  const users = JSON.parse(localStorage.getItem("users") || "[]");
-  const teachers = JSON.parse(localStorage.getItem("teachers") || "[]");
-  const unlockedLessons = JSON.parse(localStorage.getItem("unlockedLessons") || "{}");
+  const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem("users") || "[]"));
+  const [teachers, setTeachers] = useState(() => JSON.parse(localStorage.getItem("teachers") || "[]"));
+  const [activities, setActivities] = useState(() => JSON.parse(localStorage.getItem("activities") || "[]"));
+  const [unlockedLessons, setUnlockedLessons] = useState(() => JSON.parse(localStorage.getItem("unlockedLessons") || "{}"));
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
@@ -368,25 +373,25 @@ const AdminDashboard = () => {
 
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      toast("Please fill in all fields", "error");
+      toast.error("Please fill in all fields");
       return;
     }
     if (currentPassword !== "/") {
-      toast("Current password is incorrect", "error");
+      toast.error("Current password is incorrect");
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast("New passwords do not match", "error");
+      toast.error("New passwords do not match");
       return;
     }
     if (newPassword.length < 4) {
-      toast("Nenosiri lazima iwe angalau herufi 4", "error");
+      toast.error("Nenosiri lazima iwe angalau herufi 4");
       return;
     }
     const adminData = JSON.parse(localStorage.getItem("adminCredentials") || '{"username":"Admin","password":"/"}');
     adminData.password = newPassword;
     localStorage.setItem("adminCredentials", JSON.stringify(adminData));
-    toast("Password changed successfully!", "success");
+    toast.success("Password changed successfully!");
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -394,7 +399,7 @@ const AdminDashboard = () => {
 
   const handleResetUserPassword = async () => {
     if (!resetNewPassword || resetNewPassword.length < 4) {
-      toast("Password must be at least 4 characters", "error");
+      toast.error("Password must be at least 4 characters");
       return;
     }
     const hashedPassword = await hashPassword(resetNewPassword);
@@ -407,7 +412,7 @@ const AdminDashboard = () => {
       const updated = users.map(u => u.rgNumber === resetUser.rgNumber ? {...u, password: hashedPassword} : u);
       localStorage.setItem("users", JSON.stringify(updated));
     }
-    toast(`Password for ${resetUser.name} changed successfully`, "success");
+    toast.success(`Password for ${resetUser.name} changed successfully`);
     setShowResetModal(false);
     setResetUser(null);
     setResetNewPassword("");
@@ -415,7 +420,7 @@ const AdminDashboard = () => {
 
   const addStudent = async () => {
     if (!newStudent.name || !newStudent.phoneNumber || !newStudent.gender || !newStudent.password) {
-      toast("Please fill in all fields", "error");
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -436,12 +441,12 @@ const AdminDashboard = () => {
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setShowAddStudent(false);
     setNewStudent({ name: "", phoneNumber: "", gender: "", marhala: "2", password: "" });
-    toast(`Student added successfully! ${rgNumber}`, "success");
+    toast.success(`Student added successfully! ${rgNumber}`);
   };
 
   const addTeacher = async () => {
     if (!newTeacher.name || !newTeacher.phone || !newTeacher.gender || !newTeacher.password) {
-      toast("Please fill in all fields", "error");
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -460,7 +465,7 @@ const AdminDashboard = () => {
     localStorage.setItem("teachers", JSON.stringify(updatedTeachers));
     setShowAddTeacher(false);
     setNewTeacher({ name: "", email: "", phone: "", gender: "", password: "", marhalat: [] });
-    toast("Teacher added successfully!", "success");
+    toast.success("Teacher added successfully!");
   };
 
   const deleteUser = (rgNumber, name) => {
@@ -476,19 +481,20 @@ const AdminDashboard = () => {
     if (type === "student") {
       const updated = users.filter(u => u.rgNumber !== item.id);
       localStorage.setItem("users", JSON.stringify(updated));
-      toast(`${item.name} has been deleted`, "success");
+      setUsers(updated);
+      toast.success(`${item.name} has been deleted`);
     } else if (type === "teacher") {
       const updated = teachers.filter(t => t.phone !== item.id);
       localStorage.setItem("teachers", JSON.stringify(updated));
-      toast(`${item.name} has been deleted`, "success");
+      setTeachers(updated);
+      toast.success(`${item.name} has been deleted`);
     } else if (type === "activity") {
-      const activities = JSON.parse(localStorage.getItem("activities") || "[]");
       const updated = activities.filter(a => a.id !== item.id);
       localStorage.setItem("activities", JSON.stringify(updated));
-      toast("Activity deleted", "success");
+      setActivities(updated);
+      toast.success("Activity deleted");
     }
     setDeleteDialog({ open: false, type: "", item: null });
-    window.location.reload();
   };
 
   const deleteTeacher = (phone, name) => {
@@ -508,7 +514,7 @@ const AdminDashboard = () => {
   };
 
   const toggleLesson = (marhala, lessonId) => {
-    const current = JSON.parse(localStorage.getItem("unlockedLessons") || "{}");
+    const current = { ...unlockedLessons };
     if (!current[marhala]) current[marhala] = [];
     
     if (current[marhala].includes(lessonId)) {
@@ -517,7 +523,7 @@ const AdminDashboard = () => {
       current[marhala].push(lessonId);
     }
     localStorage.setItem("unlockedLessons", JSON.stringify(current));
-    window.location.reload();
+    setUnlockedLessons(current);
   };
 
   const marhalaData = {
@@ -538,23 +544,23 @@ const AdminDashboard = () => {
   );
 
   const navItems = [
-    { icon: Users, label: "Students", section: "students" },
-    { icon: GraduationCap, label: "Teachers", section: "teachers" },
-    { icon: BookOpen, label: "Lessons", section: "lessons" },
-    { icon: ClipboardList, label: "Activities", section: "activities" },
-    { icon: Settings, label: "Settings", section: "settings" },
+    { icon: faUsers, label: "Students", section: "students" },
+    { icon: faGraduationCap, label: "Teachers", section: "teachers" },
+    { icon: faBookOpen, label: "Lessons", section: "lessons" },
+    { icon: faClipboardList, label: "Activities", section: "activities" },
+    { icon: faCog, label: "Settings", section: "settings" },
   ];
 
-  const SidebarItem = ({ icon: Icon, label, section }) => (
+  const SidebarItem = ({ icon, label, section }) => (
     <button
       onClick={() => { setActiveSection(section); setMobileMenuOpen(false); }}
       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
         activeSection === section 
-          ? "bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-800 border-l-4 border-emerald-600 shadow-sm" 
-          : "text-emerald-900/70 hover:bg-emerald-50 hover:text-emerald-900"
+          ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-800 border-l-4 border-primary shadow-sm" 
+          : "text-gray-900/70 hover:bg-gray-50 hover:text-gray-900"
       }`}
     >
-      <Icon className={`w-5 h-5 ${activeSection === section ? 'text-emerald-600' : 'group-hover:scale-110'}`} />
+      <FontAwesomeIcon icon={icon} className={`w-5 h-5 ${activeSection === section ? 'text-primary' : 'group-hover:scale-110'}`} />
       <span className="font-body font-medium">{label}</span>
     </button>
   );
@@ -565,38 +571,38 @@ const AdminDashboard = () => {
         return (
           <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between flex-wrap gap-4">
-              <h3 className="text-2xl font-display font-bold text-emerald-900">Students</h3>
-              <Button onClick={() => setShowAddStudent(!showAddStudent)} className="bg-emerald-600 hover:bg-emerald-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <h3 className="text-2xl font-display font-bold text-gray-900">Students</h3>
+              <Button onClick={() => setShowAddStudent(!showAddStudent)} className="bg-primary hover:bg-gray-800">
+                <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2" />
                 Add Student
               </Button>
             </div>
 
             {showAddStudent && (
-              <Card className="bg-emerald-50 border-emerald-200">
+              <Card className="bg-gray-50 border-gray-200">
                 <CardContent className="p-6 space-y-4">
-                  <h4 className="font-display font-semibold text-emerald-900">Add New Student (Marhala 2-4)</h4>
+                  <h4 className="font-display font-semibold text-gray-900">Add New Student (Marhala 2-4)</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input placeholder="Name" value={newStudent.name} onChange={(e) => setNewStudent({...newStudent, name: e.target.value})} />
                     <Input placeholder="Phone Number" value={newStudent.phoneNumber} onChange={(e) => setNewStudent({...newStudent, phoneNumber: e.target.value})} />
-                    <select className="p-2 border border-emerald-200 rounded-lg" value={newStudent.marhala} onChange={(e) => setNewStudent({...newStudent, marhala: e.target.value})}>
+                    <select className="p-2 border border-gray-200 rounded-lg" value={newStudent.marhala} onChange={(e) => setNewStudent({...newStudent, marhala: e.target.value})}>
                       <option value="2">Marhala 2</option>
                       <option value="3">Marhala 3</option>
                       <option value="4">Marhala 4</option>
                     </select>
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => setNewStudent({...newStudent, gender: "A"})} className={`flex-1 p-2 rounded border ${newStudent.gender === "A" ? "bg-emerald-200 border-emerald-500" : "border-gray-200"}`}>Male</button>
-                      <button type="button" onClick={() => setNewStudent({...newStudent, gender: "B"})} className={`flex-1 p-2 rounded border ${newStudent.gender === "B" ? "bg-emerald-200 border-emerald-500" : "border-gray-200"}`}>Female</button>
+                      <button type="button" onClick={() => setNewStudent({...newStudent, gender: "A"})} className={`flex-1 p-2 rounded border ${newStudent.gender === "A" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Male</button>
+                      <button type="button" onClick={() => setNewStudent({...newStudent, gender: "B"})} className={`flex-1 p-2 rounded border ${newStudent.gender === "B" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Female</button>
                     </div>
                     <Input type="password" placeholder="Password" value={newStudent.password} onChange={(e) => setNewStudent({...newStudent, password: e.target.value})} />
                   </div>
-                  <Button onClick={addStudent} className="bg-emerald-600 hover:bg-emerald-700">Save</Button>
+                  <Button onClick={addStudent} className="bg-primary hover:bg-gray-800">Save</Button>
                 </CardContent>
               </Card>
             )}
 
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
+              <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input 
                 className="pl-10" 
                 placeholder="Search by name or number..."
@@ -607,29 +613,29 @@ const AdminDashboard = () => {
 
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <table className="w-full">
-                <thead className="bg-emerald-50 border-b border-emerald-200">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="text-left p-4 font-display text-sm text-emerald-800">Reg Number</th>
-                    <th className="text-left p-4 font-display text-sm text-emerald-800">Name</th>
-                    <th className="text-left p-4 font-display text-sm text-emerald-800">Marhala</th>
-                    <th className="text-left p-4 font-display text-sm text-emerald-800">Gender</th>
-                    <th className="text-left p-4 font-display text-sm text-emerald-800">Actions</th>
+                    <th className="text-left p-4 font-display text-sm text-gray-800">Reg Number</th>
+                    <th className="text-left p-4 font-display text-sm text-gray-800">Name</th>
+                    <th className="text-left p-4 font-display text-sm text-gray-800">Marhala</th>
+                    <th className="text-left p-4 font-display text-sm text-gray-800">Gender</th>
+                    <th className="text-left p-4 font-display text-sm text-gray-800">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredStudents.map((student, idx) => (
-                    <tr key={idx} className="border-b border-gray-100 hover:bg-emerald-50/50">
-                      <td className="p-4 font-body text-emerald-900">{student.rgNumber}</td>
-                      <td className="p-4 font-body text-emerald-900">{student.name}</td>
-                      <td className="p-4 font-body text-emerald-900">Marhala {student.marhala}</td>
-                      <td className="p-4 font-body text-emerald-900">{student.gender === "A" ? "M" : "F"}</td>
+                    <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50/50">
+                      <td className="p-4 font-body text-gray-900">{student.rgNumber}</td>
+                      <td className="p-4 font-body text-gray-900">{student.name}</td>
+                      <td className="p-4 font-body text-gray-900">Marhala {student.marhala}</td>
+                      <td className="p-4 font-body text-gray-900">{student.gender === "A" ? "M" : "F"}</td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
                           <button onClick={() => { setResetUser(student); setShowResetModal(true); }} className="text-blue-500 hover:text-blue-700" title="Reset Password">
-                            <Unlock className="w-5 h-5" />
+                            <FontAwesomeIcon icon={faUnlock} className="w-5 h-5" />
                           </button>
                           <button onClick={() => deleteUser(student.rgNumber, student.name)} className="text-red-500 hover:text-red-700" title="Delete">
-                            <Trash2 className="w-5 h-5" />
+                            <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
                           </button>
                         </div>
                       </td>
@@ -650,53 +656,53 @@ const AdminDashboard = () => {
         return (
           <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between flex-wrap gap-4">
-              <h3 className="text-2xl font-display font-bold text-emerald-900">Teachers</h3>
-              <Button onClick={() => setShowAddTeacher(!showAddTeacher)} className="bg-emerald-600 hover:bg-emerald-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <h3 className="text-2xl font-display font-bold text-gray-900">Teachers</h3>
+              <Button onClick={() => setShowAddTeacher(!showAddTeacher)} className="bg-primary hover:bg-gray-800">
+                <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2" />
                 Add Teacher
               </Button>
             </div>
 
             {showAddTeacher && (
-              <Card className="bg-emerald-50 border-emerald-200">
+              <Card className="bg-gray-50 border-gray-200">
                 <CardContent className="p-6 space-y-4">
-                  <h4 className="font-display font-semibold text-emerald-900">Add New Teacher</h4>
+                  <h4 className="font-display font-semibold text-gray-900">Add New Teacher</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input placeholder="Name" value={newTeacher.name} onChange={(e) => setNewTeacher({...newTeacher, name: e.target.value})} />
                     <Input placeholder="Phone Number" value={newTeacher.phone} onChange={(e) => setNewTeacher({...newTeacher, phone: e.target.value})} />
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => setNewTeacher({...newTeacher, gender: "A"})} className={`flex-1 p-2 rounded border ${newTeacher.gender === "A" ? "bg-emerald-200 border-emerald-500" : "border-gray-200"}`}>Male</button>
-                      <button type="button" onClick={() => setNewTeacher({...newTeacher, gender: "B"})} className={`flex-1 p-2 rounded border ${newTeacher.gender === "B" ? "bg-emerald-200 border-emerald-500" : "border-gray-200"}`}>Female</button>
+                      <button type="button" onClick={() => setNewTeacher({...newTeacher, gender: "A"})} className={`flex-1 p-2 rounded border ${newTeacher.gender === "A" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Male</button>
+                      <button type="button" onClick={() => setNewTeacher({...newTeacher, gender: "B"})} className={`flex-1 p-2 rounded border ${newTeacher.gender === "B" ? "bg-primary/20 border-primary" : "border-gray-200"}`}>Female</button>
                     </div>
                     <Input type="password" placeholder="Password" value={newTeacher.password} onChange={(e) => setNewTeacher({...newTeacher, password: e.target.value})} />
                   </div>
-                  <Button onClick={addTeacher} className="bg-emerald-600 hover:bg-emerald-700">Save</Button>
+                  <Button onClick={addTeacher} className="bg-primary hover:bg-gray-800">Save</Button>
                 </CardContent>
               </Card>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredTeachers.map((teacher, idx) => (
-                <Card key={idx} className="bg-white border border-gray-200 hover:border-emerald-300 transition-all">
+                <Card key={idx} className="bg-white border border-gray-200 hover:border-gray-300 transition-all">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <GraduationCap className="w-6 h-6 text-emerald-600" />
+                      <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                        <FontAwesomeIcon icon={faGraduationCap} className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-display font-semibold text-emerald-900">{teacher.name}</h4>
-                        <p className="text-sm text-emerald-600">{teacher.phone}</p>
+                        <h4 className="font-display font-semibold text-gray-900">{teacher.name}</h4>
+                        <p className="text-sm text-primary">{teacher.phone}</p>
                       </div>
                     </div>
-                    <p className="text-sm text-emerald-700 mb-2">Marhala: {teacher.marhalat?.join(", ") || "1-4"}</p>
-                    <p className="text-sm text-emerald-700 mb-4">Phone: {teacher.phone}</p>
+                    <p className="text-sm text-gray-700 mb-2">Marhala: {teacher.marhalat?.join(", ") || "1-4"}</p>
+                    <p className="text-sm text-gray-700 mb-4">Phone: {teacher.phone}</p>
                     <div className="flex gap-2">
                       <Button onClick={() => { setResetUser(teacher); setShowResetModal(true); }} variant="outline" size="sm" className="flex-1">
-                        <Unlock className="w-4 h-4 mr-1" />
+                        <FontAwesomeIcon icon={faUnlock} className="w-4 h-4 mr-1" />
                         Reset
                       </Button>
                       <Button onClick={() => deleteTeacher(teacher.phone, teacher.name)} variant="destructive" size="sm">
-                        <Trash2 className="w-4 h-4" />
+                        <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardContent>
@@ -712,13 +718,13 @@ const AdminDashboard = () => {
       case "lessons":
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-2xl font-display font-bold text-emerald-900">Lesson Management</h3>
-            <p className="text-emerald-700">Unlock or lock lessons for each Marhala</p>
+            <h3 className="text-2xl font-display font-bold text-gray-900">Lesson Management</h3>
+            <p className="text-gray-700">Unlock or lock lessons for each Marhala</p>
             
             {[1,2,3,4].map(m => (
               <Card key={m} className="bg-white border border-gray-200">
                 <CardHeader>
-                  <CardTitle className="text-emerald-900">Marhala {m}</CardTitle>
+                  <CardTitle className="text-gray-900">Marhala {m}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
@@ -727,16 +733,16 @@ const AdminDashboard = () => {
                       const isUnlocked = unlockedLessons[m]?.includes(lessonId);
                       return (
                         <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <span className="text-emerald-900">{lesson}</span>
+                          <span className="text-gray-900">{lesson}</span>
                           <button 
                             onClick={() => toggleLesson(m, lessonId)}
                             className={`flex items-center gap-2 px-3 py-1 rounded-lg text-sm ${
                               isUnlocked 
-                                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200" 
+                                ? "bg-gray-100 text-gray-700 hover:bg-primary/20" 
                                 : "bg-red-100 text-red-700 hover:bg-red-200"
                             }`}
                           >
-                            {isUnlocked ? <><Unlock className="w-4 h-4" /> Unlocked</> : <><Lock className="w-4 h-4" /> Locked</>}
+                            {isUnlocked ? <><FontAwesomeIcon icon={faUnlock} className="w-4 h-4" /> Unlocked</> : <><FontAwesomeIcon icon={faLock} className="w-4 h-4" /> Locked</>}
                           </button>
                         </div>
                       );
@@ -749,16 +755,16 @@ const AdminDashboard = () => {
         );
 
       case "activities":
-        return <ActivityCreator />;
+        return <ActivityCreator activities={activities} setActivities={setActivities} />;
 
       case "settings":
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-2xl font-display font-bold text-emerald-900">Settings</h3>
-            <Card className="bg-emerald-50 border-emerald-200">
+            <h3 className="text-2xl font-display font-bold text-gray-900">Settings</h3>
+            <Card className="bg-gray-50 border-gray-200">
               <CardContent className="p-6 space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-emerald-800">Current Password</label>
+                  <label className="text-sm font-medium text-gray-800">Current Password</label>
                   <Input 
                     type="password" 
                     placeholder="Current password" 
@@ -768,7 +774,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-emerald-800">New Password</label>
+                  <label className="text-sm font-medium text-gray-800">New Password</label>
                   <Input 
                     type="password" 
                     placeholder="New password" 
@@ -778,7 +784,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-emerald-800">Confirm Password</label>
+                  <label className="text-sm font-medium text-gray-800">Confirm Password</label>
                   <Input 
                     type="password" 
                     placeholder="Confirm password" 
@@ -789,7 +795,7 @@ const AdminDashboard = () => {
                 </div>
                 <Button 
                   onClick={handlePasswordChange}
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-primary hover:bg-gray-800"
                 >
                   Change Password
                 </Button>
@@ -804,31 +810,31 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 relative">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative">
       <div className="absolute inset-0 opacity-[0.02]" 
         style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%231e5128\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/svg%3E")' }}>
       </div>
 
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-emerald-100 z-50 px-4 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100 z-50 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img src={Logo} alt="Logo" className="w-8 h-8 rounded-full" />
-          <span className="font-display font-bold text-emerald-800">Tajweed Admin</span>
+          <span className="font-display font-bold text-gray-800">Tajweed Admin</span>
         </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-emerald-50">
-          {mobileMenuOpen ? <X className="w-6 h-6 text-emerald-800" /> : <Menu className="w-6 h-6 text-emerald-800" />}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-gray-50">
+          {mobileMenuOpen ? <FontAwesomeIcon icon={faXmark} className="w-6 h-6 text-gray-800" /> : <FontAwesomeIcon icon={faBars} className="w-6 h-6 text-gray-800" />}
         </button>
       </div>
 
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-white z-40 pt-16 overflow-y-auto">
           <div className="p-4">
-            <div className="flex items-center gap-3 p-4 mb-4 bg-gradient-to-r from-emerald-50 to-emerald-50 rounded-xl border border-emerald-100">
-              <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Settings className="w-6 h-6 text-emerald-600" />
+            <div className="flex items-center gap-3 p-4 mb-4 bg-gradient-to-r from-gray-50 to-gray-50 rounded-xl border border-gray-100">
+              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                <FontAwesomeIcon icon={faCog} className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-emerald-600 uppercase">Admin</p>
-                <p className="text-emerald-900 font-display font-semibold">Mratibu</p>
+                <p className="text-xs text-primary uppercase">Admin</p>
+                <p className="text-gray-900 font-display font-semibold">Mratibu</p>
               </div>
             </div>
             <nav className="space-y-2">
@@ -836,7 +842,7 @@ const AdminDashboard = () => {
                 <SidebarItem key={item.section} icon={item.icon} label={item.label} section={item.section} />
               ))}
               <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50">
-                <LogOut className="w-5 h-5" />
+                <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5" />
                 <span className="font-body">Logout</span>
               </button>
             </nav>
@@ -844,14 +850,14 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      <div className="hidden md:flex w-72 bg-white/80 backdrop-blur-sm border-r border-emerald-100/50 p-6 flex-col">
-        <div className="flex items-center gap-3 p-4 mb-6 bg-gradient-to-r from-emerald-50 to-emerald-50 rounded-xl border border-emerald-100">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-            <Settings className="w-6 h-6 text-emerald-600" />
+      <div className="hidden md:flex w-72 bg-white/80 backdrop-blur-sm border-r border-gray-100/50 p-6 flex-col">
+        <div className="flex items-center gap-3 p-4 mb-6 bg-gradient-to-r from-gray-50 to-gray-50 rounded-xl border border-gray-100">
+          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+            <FontAwesomeIcon icon={faCog} className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <p className="text-xs text-emerald-600 uppercase">Admin</p>
-            <p className="text-emerald-900 font-display font-semibold truncate">Mratibu</p>
+            <p className="text-xs text-primary uppercase">Admin</p>
+            <p className="text-gray-900 font-display font-semibold truncate">Mratibu</p>
           </div>
         </div>
         
@@ -862,7 +868,7 @@ const AdminDashboard = () => {
         </nav>
         
         <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50">
-          <LogOut className="w-5 h-5" />
+          <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5" />
           <span className="font-body">Logout</span>
         </button>
       </div>
@@ -870,10 +876,10 @@ const AdminDashboard = () => {
       <div className="flex-1 p-4 md:p-8 mt-16 md:mt-0 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-emerald-900">
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
               Dashboard ya Mratibu
             </h1>
-            <p className="text-emerald-700/70 font-body mt-1">Simamia mfumo wote</p>
+            <p className="text-gray-700/70 font-body mt-1">Simamia mfumo wote</p>
           </div>
           
           {renderContent()}
@@ -884,12 +890,12 @@ const AdminDashboard = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-display font-bold text-emerald-900">Badili Nenosiri</h3>
+              <h3 className="text-xl font-display font-bold text-gray-900">Badili Nenosiri</h3>
               <button onClick={() => { setShowResetModal(false); setResetUser(null); }} className="text-gray-500 hover:text-gray-700">
-                <X className="w-6 h-6" />
+                <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
               </button>
             </div>
-            <p className="text-emerald-700 mb-4">Mtoa: <span className="font-semibold">{resetUser?.name}</span></p>
+            <p className="text-gray-700 mb-4">Mtoa: <span className="font-semibold">{resetUser?.name}</span></p>
             <Input 
               type="password" 
               placeholder="Nenosiri mpya" 
@@ -898,7 +904,7 @@ const AdminDashboard = () => {
               className="mb-4"
             />
             <div className="flex gap-2">
-              <Button onClick={handleResetUserPassword} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+              <Button onClick={handleResetUserPassword} className="flex-1 bg-primary hover:bg-gray-800">
                 Hifadhi
               </Button>
               <Button onClick={() => { setShowResetModal(false); setResetUser(null); }} variant="outline">
@@ -914,7 +920,7 @@ const AdminDashboard = () => {
           <DialogHeader>
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
+                <FontAwesomeIcon icon={faTriangleExclamation} className="w-6 h-6 text-red-600" />
               </div>
               <div>
                 <DialogTitle>Confirm Delete</DialogTitle>

@@ -3,15 +3,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { BookOpen, Calendar, ClipboardList, BarChart3, Users, HelpCircle, LogOut, Lock, CheckCircle, Clock, ChevronRight, Menu, X, Home, GraduationCap, Sparkles, Award, MessageCircle, Search, Send, Trash2 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBookOpen, faCalendar, faClipboardList, faChartBar, faUsers, faCircleQuestion,
+  faRightFromBracket, faLock, faCircleCheck, faClock, faChevronRight, faBars,
+  faXmark, faHome, faGraduationCap, faWandMagicSparkles, faAward, faComments,
+  faSearch, faPaperPlane, faTrash
+} from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/assets/images/logo.jpeg";
 import { getScheduleData } from "./scheduleData";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/toast";
+import { toast } from "sonner";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
-  const toast = useToast();
+  
   const [activeSection, setActiveSection] = useState("profile");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredLesson, setHoveredLesson] = useState(null);
@@ -148,16 +154,16 @@ const StudentDashboard = () => {
   const unreadReplies = myQuestions.filter(q => q.status === "answered").length;
   
   const navItems = [
-    { icon: Home, label: "Profile", section: "profile" },
-    { icon: Calendar, label: "Schedule", section: "schedule" },
-    { icon: BookOpen, label: "Lessons", section: "lessons" },
-    { icon: ClipboardList, label: "Activities", section: "activities" },
-    { icon: Award, label: "Results", section: "results" },
-    { icon: Users, label: "Ask Teacher", section: "teachers", badge: unreadReplies > 0 ? unreadReplies : 0 },
-    { icon: BookOpen, label: "About", section: "about" },
+    { icon: faHome, label: "Profile", section: "profile" },
+    { icon: faCalendar, label: "Schedule", section: "schedule" },
+    { icon: faBookOpen, label: "Lessons", section: "lessons" },
+    { icon: faClipboardList, label: "Activities", section: "activities" },
+    { icon: faAward, label: "Results", section: "results" },
+    { icon: faUsers, label: "Ask Teacher", section: "teachers", badge: unreadReplies > 0 ? unreadReplies : 0 },
+    { icon: faBookOpen, label: "About", section: "about" },
   ];
 
-  const SidebarItem = ({ icon: Icon, label, section, badge }) => (
+  const SidebarItem = ({ icon, label, section, badge }) => (
     <button
       onClick={() => {
         setActiveSection(section);
@@ -165,12 +171,12 @@ const StudentDashboard = () => {
       }}
       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group ${
         activeSection === section 
-          ? "bg-gradient-to-r from-emerald-100 to-teal-50 text-emerald-800 border-l-4 border-emerald-600 shadow-sm" 
-          : "text-emerald-900/70 hover:bg-emerald-50 hover:text-emerald-900"
+          ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-800 border-l-4 border-primary shadow-sm" 
+          : "text-gray-900/70 hover:bg-gray-50 hover:text-gray-900"
       }`}
     >
       <div className="flex items-center gap-3">
-        <Icon className={`w-5 h-5 transition-transform duration-300 ${activeSection === section ? 'text-emerald-600' : 'group-hover:scale-110'}`} />
+        <FontAwesomeIcon icon={icon} className={`w-5 h-5 transition-transform duration-300 ${activeSection === section ? 'text-primary' : 'group-hover:scale-110'}`} />
         <span className="font-body font-medium">{label}</span>
       </div>
       {badge > 0 && (
@@ -184,44 +190,44 @@ const StudentDashboard = () => {
       case "profile":
         return (
           <div className="space-y-6 animate-fade-in">
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-100 via-white to-emerald-50 rounded-2xl shadow-lg p-6 text-emerald-900 border border-emerald-200">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-200/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+            <div className="relative overflow-hidden bg-gradient-to-br from-gray-100 via-white to-gray-50 rounded-2xl shadow-lg p-6 text-gray-900 border border-gray-200">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-emerald-300 shadow-xl">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-gray-300 shadow-xl">
                     <img src={Logo} alt="Profile" className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="text-center md:text-left flex-1">
-                  <h2 className="text-2xl font-display font-bold text-emerald-900">{student.name}</h2>
-                  <p className="text-emerald-700 text-sm">Marhala {student.marhala} • Awamu {student.awamu}</p>
+                  <h2 className="text-2xl font-display font-bold text-gray-900">{student.name}</h2>
+                  <p className="text-gray-700 text-sm">Marhala {student.marhala} • Awamu {student.awamu}</p>
                   <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-3">
-                    <div className="bg-white/80 rounded-lg px-3 py-1.5 border border-emerald-200">
-                      <p className="text-xs text-emerald-500 uppercase tracking-wider">Reg</p>
-                      <p className="text-base font-semibold font-display text-emerald-800">{student.rgNumber}</p>
+                    <div className="bg-white/80 rounded-lg px-3 py-1.5 border border-gray-200">
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">Reg</p>
+                      <p className="text-base font-semibold font-display text-gray-800">{student.rgNumber}</p>
                     </div>
-                    <div className="bg-white/80 rounded-lg px-3 py-1.5 border border-emerald-200">
-                      <p className="text-xs text-emerald-500 uppercase tracking-wider">Marhala</p>
-                      <p className="text-base font-semibold font-display text-emerald-800">{student.marhala}</p>
+                    <div className="bg-white/80 rounded-lg px-3 py-1.5 border border-gray-200">
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">Marhala</p>
+                      <p className="text-base font-semibold font-display text-gray-800">{student.marhala}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <Card className="bg-white border border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all">
+              <Card className="bg-white border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
-                  <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-emerald-100 flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-emerald-600" />
+                  <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-gray-100 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faBookOpen} className="w-5 h-5 text-primary" />
                   </div>
-                  <p className="text-2xl font-display font-bold text-emerald-900">0/9</p>
-                  <p className="text-xs text-emerald-600">Lessons</p>
+                  <p className="text-2xl font-display font-bold text-gray-900">0/9</p>
+                  <p className="text-xs text-primary">Lessons</p>
                 </CardContent>
               </Card>
               <Card className="bg-white border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <ClipboardList className="w-5 h-5 text-blue-600" />
+                    <FontAwesomeIcon icon={faClipboardList} className="w-5 h-5 text-blue-600" />
                   </div>
                   <p className="text-2xl font-display font-bold text-blue-900">0/2</p>
                   <p className="text-xs text-blue-600">Quizzes</p>
@@ -230,7 +236,7 @@ const StudentDashboard = () => {
               <Card className="bg-white border border-purple-100 hover:border-purple-300 hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-purple-100 flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                    <FontAwesomeIcon icon={faChartBar} className="w-5 h-5 text-purple-600" />
                   </div>
                   <p className="text-2xl font-display font-bold text-purple-900">0/1</p>
                   <p className="text-xs text-purple-600">Exam</p>
@@ -239,23 +245,23 @@ const StudentDashboard = () => {
               <Card className="bg-white border border-amber-100 hover:border-amber-300 hover:shadow-md transition-all">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-amber-100 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-amber-600" />
+                    <FontAwesomeIcon icon={faWandMagicSparkles} className="w-5 h-5 text-amber-600" />
                   </div>
                   <p className="text-2xl font-display font-bold text-amber-900">0%</p>
                   <p className="text-xs text-amber-600">Progress</p>
                 </CardContent>
               </Card>
             </div>
-            <Card className="bg-emerald-50 border border-emerald-200">
+            <Card className="bg-gray-50 border border-gray-200">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-4 h-4 text-emerald-600" />
-                  <h3 className="font-display font-semibold text-emerald-900 text-sm">Your Progress</h3>
+                  <FontAwesomeIcon icon={faWandMagicSparkles} className="w-4 h-4 text-primary" />
+                  <h3 className="font-display font-semibold text-gray-900 text-sm">Your Progress</h3>
                 </div>
-                <div className="w-full bg-emerald-200 rounded-full h-2 overflow-hidden">
-                  <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: '0%' }}></div>
+                <div className="w-full bg-primary/20 rounded-full h-2 overflow-hidden">
+                  <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: '0%' }}></div>
                 </div>
-                <p className="text-right text-sm text-emerald-600 mt-2 font-body">0% completed</p>
+                <p className="text-right text-sm text-primary mt-2 font-body">0% completed</p>
               </CardContent>
             </Card>
           </div>
@@ -264,19 +270,19 @@ const StudentDashboard = () => {
       case "schedule": {
         return (
           <div className="space-y-4 animate-fade-in">
-            <div className="flex items-center justify-between pb-3 border-b border-emerald-200">
-              <h3 className="text-lg font-display font-semibold text-emerald-900">Schedule - Awamu {student.awamu}</h3>
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <h3 className="text-lg font-display font-semibold text-gray-900">Schedule - Awamu {student.awamu}</h3>
             </div>
             <div className="space-y-2">
               {schedule.map((item, idx) => (
                 <div 
                   key={idx} 
-                  className="flex items-center justify-between p-4 bg-white rounded-xl border border-emerald-100 hover:border-emerald-300 hover:shadow-md transition-all duration-300"
+                  className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-display font-bold text-lg ${
                       item.type === "lesson" 
-                        ? "bg-emerald-100 text-emerald-700" 
+                        ? "bg-gray-100 text-gray-700" 
                         : item.type === "quiz"
                         ? "bg-blue-100 text-blue-700"
                         : item.type === "exam"
@@ -286,8 +292,8 @@ const StudentDashboard = () => {
                       {item.type === "lesson" ? "L" : item.type === "quiz" ? "Q" : item.type === "exam" ? "E" : "R"}
                     </div>
                     <div>
-                      <p className="font-display font-semibold text-emerald-900">{item.title}</p>
-                      <p className="text-sm text-emerald-600">{item.date}</p>
+                      <p className="font-display font-semibold text-gray-900">{item.title}</p>
+                      <p className="text-sm text-primary">{item.date}</p>
                     </div>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -297,7 +303,7 @@ const StudentDashboard = () => {
                       ? "bg-purple-100 text-purple-700"
                       : item.type === "results"
                       ? "bg-amber-100 text-amber-700"
-                      : "bg-emerald-100 text-emerald-700"
+                      : "bg-gray-100 text-gray-700"
                   }`}>
                     {item.type === "lesson" ? "Lesson" : item.type === "quiz" ? "Quiz" : item.type === "exam" ? "Exam" : "Results"}
                   </span>
@@ -311,9 +317,9 @@ const StudentDashboard = () => {
       case "lessons":
         return (
           <div className="space-y-4 animate-fade-in">
-            <div className="flex items-center justify-between pb-3 border-b border-emerald-200">
-              <h3 className="text-lg font-display font-semibold text-emerald-900">Lessons - Marhala {student.marhala}</h3>
-              <span className="text-sm text-emerald-600">{lessons.filter(l => !l.isLocked).length}/{lessons.length} available</span>
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <h3 className="text-lg font-display font-semibold text-gray-900">Lessons - Marhala {student.marhala}</h3>
+              <span className="text-sm text-primary">{lessons.filter(l => !l.isLocked).length}/{lessons.length} available</span>
             </div>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => (
@@ -323,8 +329,8 @@ const StudentDashboard = () => {
                     lesson.isLocked 
                       ? "bg-gray-50 border-gray-200 opacity-60" 
                       : lesson.isCompleted
-                      ? "bg-emerald-50 border-emerald-200"
-                      : "bg-white border-emerald-100 hover:border-emerald-300 hover:shadow-md"
+                      ? "bg-gray-50 border-gray-200"
+                      : "bg-white border-gray-100 hover:border-gray-300 hover:shadow-md"
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -332,27 +338,27 @@ const StudentDashboard = () => {
                       lesson.isLocked 
                         ? "bg-gray-200 text-gray-500" 
                         : lesson.isCompleted
-                        ? "bg-emerald-600 text-white"
-                        : "bg-emerald-100 text-emerald-700"
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 text-gray-700"
                     }`}>
                       {lesson.isLocked ? (
-                        <Lock className="w-5 h-5" />
+                        <FontAwesomeIcon icon={faLock} className="w-5 h-5" />
                       ) : lesson.isCompleted ? (
-                        <CheckCircle className="w-5 h-5" />
+                        <FontAwesomeIcon icon={faCircleCheck} className="w-5 h-5" />
                       ) : (
                         <span>{idx + 1}</span>
                       )}
                     </div>
                     <div>
-                      <h4 className={`font-display font-semibold text-lg ${lesson.isLocked ? 'text-gray-400' : 'text-emerald-900'}`}>{lesson.title}</h4>
-                      <p className={`text-sm ${lesson.isLocked ? 'text-gray-400' : 'text-emerald-600'}`}>{lesson.description}</p>
+                      <h4 className={`font-display font-semibold text-lg ${lesson.isLocked ? 'text-gray-400' : 'text-gray-900'}`}>{lesson.title}</h4>
+                      <p className={`text-sm ${lesson.isLocked ? 'text-gray-400' : 'text-primary'}`}>{lesson.description}</p>
                     </div>
                   </div>
                   {!lesson.isLocked && (
                     <Button 
                       className={`px-4 py-2 font-medium transition-all duration-300 ${
                         lesson.isCompleted
-                          ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                          ? "bg-gray-100 text-gray-700 hover:bg-primary/20"
                           : "bg-amber-500 hover:bg-amber-600 text-white"
                       }`}
                     >
@@ -379,11 +385,11 @@ const StudentDashboard = () => {
 
         const sendQuestion = () => {
           if (!question.trim()) {
-            toast("Write a question", "error");
+            toast.error("Write a question");
             return;
           }
           if (!selectedTeacher) {
-            toast("Select a teacher", "error");
+            toast.error("Select a teacher");
             return;
           }
           const questions = JSON.parse(localStorage.getItem("questions") || "[]");
@@ -402,7 +408,7 @@ const StudentDashboard = () => {
           };
           questions.push(newQuestion);
           localStorage.setItem("questions", JSON.stringify(questions));
-          toast("Question sent to " + selectedTeacher.name, "success");
+          toast.success("Question sent to " + selectedTeacher.name);
           setQuestion("");
           setSelectedQuestion(newQuestion);
           setSelectedTeacher(null);
@@ -410,7 +416,7 @@ const StudentDashboard = () => {
 
         const sendReply = () => {
           if (!replyMessage.trim()) {
-            toast("Write a reply", "error");
+            toast.error("Write a reply");
             return;
           }
           const allQ = JSON.parse(localStorage.getItem("questions") || "[]");
@@ -427,7 +433,7 @@ const StudentDashboard = () => {
           const updatedSelected = { ...selectedQuestion, messages: [...(selectedQuestion.messages || [{ id: "s0", text: selectedQuestion.question, sender: "student", timestamp: selectedQuestion.createdAt }]), { id: "s" + Date.now(), text: replyMessage, sender: "student", timestamp: new Date().toISOString() }] };
           setSelectedQuestion(updatedSelected);
           setReplyMessage("");
-          toast("Reply sent!", "success");
+          toast.success("Reply sent!");
         };
 
         const confirmDelete = (qId, e) => {
@@ -438,15 +444,15 @@ const StudentDashboard = () => {
         return (
           <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-body text-emerald-700/70">Select a teacher and ask a question</span>
+              <span className="text-sm font-body text-gray-700/70">Select a teacher and ask a question</span>
             </div>
 
             {!selectedQuestion ? (
               <div className="space-y-4">
-                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <p className="font-display font-semibold text-emerald-800 mb-3">Your Teachers:</p>
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <p className="font-display font-semibold text-gray-800 mb-3">Your Teachers:</p>
                   {filteredTeachers.length === 0 ? (
-                    <p className="text-emerald-600 font-body">No teachers registered yet.</p>
+                    <p className="text-primary font-body">No teachers registered yet.</p>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {filteredTeachers.map((teacher, idx) => (
@@ -455,18 +461,18 @@ const StudentDashboard = () => {
                           onClick={() => setSelectedTeacher(teacher)}
                           className={`p-4 rounded-xl border transition-all flex items-center gap-3 ${
                             selectedTeacher?.id === teacher.id
-                              ? "bg-emerald-500 border-emerald-500 text-white"
-                              : "bg-white border-emerald-200 hover:border-emerald-400"
+                              ? "bg-primary border-primary text-white"
+                              : "bg-white border-gray-200 hover:border-gray-400"
                           }`}
                         >
                           <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            selectedTeacher?.id === teacher.id ? "bg-white/20" : "bg-emerald-100"
+                            selectedTeacher?.id === teacher.id ? "bg-white/20" : "bg-gray-100"
                           }`}>
-                            <GraduationCap className={`w-6 h-6 ${selectedTeacher?.id === teacher.id ? "text-white" : "text-emerald-600"}`} />
+                            <FontAwesomeIcon icon={faGraduationCap} className={`w-6 h-6 ${selectedTeacher?.id === teacher.id ? "text-white" : "text-primary"}`} />
                           </div>
                           <div className="text-left">
-                            <p className={`font-display font-semibold ${selectedTeacher?.id === teacher.id ? "text-white" : "text-emerald-900"}`}>{teacher.name}</p>
-                            <p className={`text-sm ${selectedTeacher?.id === teacher.id ? "text-white/70" : "text-emerald-600"}`}>{teacher.phone}</p>
+                            <p className={`font-display font-semibold ${selectedTeacher?.id === teacher.id ? "text-white" : "text-gray-900"}`}>{teacher.name}</p>
+                            <p className={`text-sm ${selectedTeacher?.id === teacher.id ? "text-white/70" : "text-primary"}`}>{teacher.phone}</p>
                           </div>
                         </button>
                       ))}
@@ -475,10 +481,10 @@ const StudentDashboard = () => {
                 </div>
 
                 {selectedTeacher && (
-                  <div className="p-4 bg-white rounded-xl border border-emerald-200 shadow-lg">
-                    <p className="font-display font-semibold text-emerald-800 mb-3">Ask a question to {selectedTeacher.name}:</p>
+                  <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-lg">
+                    <p className="font-display font-semibold text-gray-800 mb-3">Ask a question to {selectedTeacher.name}:</p>
                     <textarea 
-                      className="w-full p-4 rounded-xl border border-emerald-200 bg-gray-50 text-emerald-900 placeholder:text-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 font-body"
+                      className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 font-body"
                       rows="3"
                       placeholder="Write your question here..."
                       value={question}
@@ -496,59 +502,59 @@ const StudentDashboard = () => {
                 )}
 
                 <div className="mt-6">
-                  <p className="font-display font-semibold text-emerald-800 mb-3">Your Questions:</p>
+                  <p className="font-display font-semibold text-gray-800 mb-3">Your Questions:</p>
                   <div className="space-y-3">
                     {myQuestions.map((q) => (
                       <div 
                         key={q.id}
                         onClick={() => setSelectedQuestion(q)}
-                        className="p-4 bg-white rounded-xl border border-emerald-200 hover:border-emerald-400 hover:shadow-lg transition-all cursor-pointer"
+                        className="p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-400 hover:shadow-lg transition-all cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                            <GraduationCap className="w-6 h-6 text-emerald-600" />
+                          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <FontAwesomeIcon icon={faGraduationCap} className="w-6 h-6 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-1">
                               <span className="font-display font-semibold text-sm text-gray-900 truncate">To: {q.teacherName || 'Teacher'}</span>
                               <span className={`px-2 py-0.5 rounded-full text-xs ${
-                                q.status === "answered" ? "bg-emerald-100 text-emerald-700" : "bg-yellow-100 text-yellow-700"
+                                q.status === "answered" ? "bg-gray-100 text-gray-700" : "bg-yellow-100 text-yellow-700"
                               }`}>
                                 {q.status === "answered" ? "Answered" : "Pending"}
                               </span>
                             </div>
                             <p className="text-sm text-gray-500 truncate">{q.question}</p>
                             {q.answer && (
-<p className="text-xs text-emerald-500 mt-1 truncate">Answer: {q.answer}</p>
+<p className="text-xs text-gray-500 mt-1 truncate">Answer: {q.answer}</p>
                             )}
                           </div>
                           <button 
-onClick={(e) => confirmDelete(q.id, e)}
+                            onClick={(e) => confirmDelete(q.id, e)}
                             className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
-                            <Trash2 className="w-5 h-5" />
+                            <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
                           </button>
                         </div>
                       </div>
                     ))}
                     {myQuestions.length === 0 && (
-                      <p className="text-emerald-600 font-body text-center py-4">No questions asked yet.</p>
+                      <p className="text-primary font-body text-center py-4">No questions asked yet.</p>
                     )}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col h-[70vh] bg-[#f5f5f5] rounded-2xl overflow-hidden shadow-lg border border-emerald-200">
-                <div className="bg-emerald-600 p-3 flex items-center justify-between shadow-sm">
+              <div className="flex flex-col h-[70vh] bg-[#f5f5f5] rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+                <div className="bg-primary p-3 flex items-center justify-between shadow-sm">
                   <div className="flex items-center gap-3">
                     <button 
                       onClick={() => setSelectedQuestion(null)}
                       className="text-white"
                     >
-                      <ChevronRight className="w-5 h-5 rotate-180" />
+                      <FontAwesomeIcon icon={faChevronRight} rotation={180} className="w-5 h-5" />
                     </button>
                     <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                      <GraduationCap className="w-5 h-5 text-white" />
+                      <FontAwesomeIcon icon={faGraduationCap} className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <h4 className="font-display font-bold text-white text-base">{activeQuestion.teacherName || 'Teacher'}</h4>
@@ -561,11 +567,11 @@ onClick={(e) => confirmDelete(q.id, e)}
                       const filtered = allQ.filter(q => q.id !== activeQuestion.id);
                       localStorage.setItem("questions", JSON.stringify(filtered));
                       setSelectedQuestion(null);
-toast("Question deleted", "success");
+                      toast.success("Question deleted");
                     }}
                     className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
                   </button>
                 </div>
                 
@@ -574,7 +580,7 @@ toast("Question deleted", "success");
                     <div key={idx} className={`flex ${msg.sender === "student" ? "justify-end" : "justify-start"}`}>
                       <div className={`max-w-[75%] p-3 rounded-2xl ${
                         msg.sender === "student" 
-                          ? "bg-emerald-500 text-white rounded-br-md" 
+                          ? "bg-primary text-white rounded-br-md" 
                           : "bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100"
                       }`}>
                         <p className="text-sm font-body">{msg.text}</p>
@@ -586,7 +592,7 @@ toast("Question deleted", "success");
                   ))}
                 </div>
                 
-                <div className="p-3 bg-white border-t border-emerald-100">
+                <div className="p-3 bg-white border-t border-gray-100">
                   <div className="flex gap-2">
                     <Input 
                       type="text"
@@ -596,8 +602,8 @@ toast("Question deleted", "success");
                       onKeyPress={(e) => e.key === "Enter" && sendReply()}
                       className="flex-1"
                     />
-                    <Button onClick={sendReply} className="bg-emerald-600 hover:bg-emerald-700">
-                      <Send className="w-4 h-4" />
+                    <Button onClick={sendReply} className="bg-primary hover:bg-gray-800">
+                      <FontAwesomeIcon icon={faPaperPlane} className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -613,22 +619,22 @@ toast("Question deleted", "success");
         return (
           <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-body text-emerald-700/70">Awamu {student.awamu}</span>
+              <span className="text-sm font-body text-gray-700/70">Awamu {student.awamu}</span>
             </div>
             <div className="space-y-4">
               {myResults.map((result, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100">
                   <div>
-                    <p className="font-display font-semibold text-emerald-900">
+                    <p className="font-display font-semibold text-gray-900">
                       {result.activityId}
                     </p>
-                    <p className="text-sm text-emerald-600">
+                    <p className="text-sm text-primary">
                       {new Date(result.submittedAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div className={`px-4 py-2 rounded-xl ${
                     result.score !== null 
-                      ? result.score >= 70 ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
+                      ? result.score >= 70 ? "bg-gray-100 text-gray-700" : "bg-red-100 text-red-700"
                       : "bg-yellow-100 text-yellow-700"
                   }`}>
                     {result.score !== null ? `${result.score}%` : "Pending"}
@@ -648,17 +654,17 @@ toast("Question deleted", "success");
       case "about": {
         return (
           <div className="space-y-8 animate-fade-in">
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-emerald-50 rounded-3xl p-8 border border-emerald-200 shadow-xl">
-              <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-200/30 rounded-full -translate-y-1/3 translate-x-1/3 blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-200/30 rounded-full translate-y-1/3 -translate-x-1/3 blur-2xl"></div>
+            <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 rounded-3xl p-8 border border-gray-200 shadow-xl">
+              <div className="absolute top-0 right-0 w-72 h-72 bg-primary/20/30 rounded-full -translate-y-1/3 translate-x-1/3 blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/20/30 rounded-full translate-y-1/3 -translate-x-1/3 blur-2xl"></div>
               
               <div className="relative z-10 flex flex-col items-center text-center">
                 <div className="relative w-32 h-32 mb-8">
-                <div className="absolute inset-0 bg-emerald-500 rounded-full animate-pulse"></div>
-                <div className="absolute inset-2 bg-emerald-400 rounded-full"></div>
-                <div className="absolute inset-4 bg-emerald-300 rounded-full"></div>
+                <div className="absolute inset-0 bg-primary rounded-full animate-pulse"></div>
+                <div className="absolute inset-2 bg-gray-400 rounded-full"></div>
+                <div className="absolute inset-4 bg-gray-300 rounded-full"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-700 shadow-lg">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg">
                     <img src={Logo} alt="Logo" className="w-full h-full object-cover" />
                   </div>
                 </div>
@@ -669,46 +675,46 @@ toast("Question deleted", "success");
                 </div>
               </div>
                 
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-emerald-900 tracking-wide">MUONGOZO WA DARSA ZA AHKAAM AT-TAJWĪD</h2>
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 tracking-wide">MUONGOZO WA DARSA ZA AHKAAM AT-TAJWĪD</h2>
                 
                 <div className="mt-6 flex items-center gap-4">
-                  <span className="px-4 py-2 bg-emerald-600 text-white font-display font-semibold rounded-full">AWAMU YA 5</span>
-                  <span className="text-emerald-700 font-body">|</span>
-                  <span className="text-emerald-700 font-display font-semibold">2026</span>
+                  <span className="px-4 py-2 bg-primary text-white font-display font-semibold rounded-full">AWAMU YA 5</span>
+                  <span className="text-gray-700 font-body">|</span>
+                  <span className="text-gray-700 font-display font-semibold">2026</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-6 bg-white rounded-2xl border border-emerald-200 p-8 shadow-lg">
+            <div className="space-y-6 bg-white rounded-2xl border border-gray-200 p-8 shadow-lg">
               <div className="text-center">
-                <p className="text-2xl font-display font-bold text-emerald-900 mb-2">Barnaamaj Ta'leem Al-Qur'an Al-Kareem wa Tajweedihi</p>
-                <p className="text-emerald-700 font-body text-lg">برنامح تعليم القرآن الكريم وتجويده</p>
+                <p className="text-2xl font-display font-bold text-gray-900 mb-2">Barnaamaj Ta'leem Al-Qur'an Al-Kareem wa Tajweedihi</p>
+                <p className="text-gray-700 font-body text-lg">برنامح تعليم القرآن الكريم وتجويده</p>
               </div>
 
-              <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-200">
-                <p className="text-emerald-800 font-body text-center text-lg leading-relaxed">
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                <p className="text-gray-800 font-body text-center text-lg leading-relaxed">
                   <span className="font-semibold">"وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا"</span>
                 </p>
-                <p className="text-emerald-600 font-body text-center text-sm mt-2">(Na soma Qur'an kwa tartiil - Sūrat al-Muzzammil: 4)</p>
+                <p className="text-primary font-body text-center text-sm mt-2">(Na soma Qur'an kwa tartiil - Sūrat al-Muzzammil: 4)</p>
               </div>
 
-              <div className="space-y-4 text-emerald-800 font-body">
+              <div className="space-y-4 text-gray-800 font-body">
                 <p className="text-lg leading-relaxed">
-                  <span className="font-display font-semibold text-emerald-900">Barnaamaj Ta'leem Al-Qur'an Al-Kareem wa Tajweedihi</span> ni Program ya Masomo ya Tajwīd Online inayohusisha kusoma Tajwiid katika ngazi 4 (marāḥil):
+                  <span className="font-display font-semibold text-gray-900">Barnaamaj Ta'leem Al-Qur'an Al-Kareem wa Tajweedihi</span> ni Program ya Masomo ya Tajwīd Online inayohusisha kusoma Tajwiid katika ngazi 4 (marāḥil):
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
-                  <div className="bg-emerald-100 rounded-xl p-4 text-center">
-                    <p className="font-display font-bold text-emerald-800">Marḥala ya Kwanza</p>
+                  <div className="bg-gray-100 rounded-xl p-4 text-center">
+                    <p className="font-display font-bold text-gray-800">Marḥala ya Kwanza</p>
                   </div>
-                  <div className="bg-emerald-100 rounded-xl p-4 text-center">
-                    <p className="font-display font-bold text-emerald-800">Marḥala ya Pili</p>
+                  <div className="bg-gray-100 rounded-xl p-4 text-center">
+                    <p className="font-display font-bold text-gray-800">Marḥala ya Pili</p>
                   </div>
-                  <div className="bg-emerald-100 rounded-xl p-4 text-center">
-                    <p className="font-display font-bold text-emerald-800">Marḥala ya Tatu</p>
+                  <div className="bg-gray-100 rounded-xl p-4 text-center">
+                    <p className="font-display font-bold text-gray-800">Marḥala ya Tatu</p>
                   </div>
-                  <div className="bg-emerald-100 rounded-xl p-4 text-center">
-                    <p className="font-display font-bold text-emerald-800">Marḥala ya Nne</p>
+                  <div className="bg-gray-100 rounded-xl p-4 text-center">
+                    <p className="font-display font-bold text-gray-800">Marḥala ya Nne</p>
                   </div>
                 </div>
 
@@ -745,11 +751,11 @@ toast("Question deleted", "success");
         
         const sendQuestion = () => {
           if (!question.trim()) {
-            toast("Andika swali", "error");
+            toast.error("Andika swali");
             return;
           }
           if (sameGenderTeachers.length === 0) {
-            toast("No teachers of your gender yet", "warning");
+            toast.warning("No teachers of your gender yet");
             return;
           }
           const assignedTeacher = sameGenderTeachers[0];
@@ -769,14 +775,14 @@ toast("Question deleted", "success");
           };
           questions.push(newQuestion);
           localStorage.setItem("questions", JSON.stringify(questions));
-          toast("Question sent to " + assignedTeacher.name + "!", "success");
+          toast.success("Question sent to " + assignedTeacher.name + "!");
           setQuestion("");
           setSelectedQuestion(newQuestion);
         };
 
         const sendReply = () => {
           if (!replyMessage.trim()) {
-            toast("Andika jibu", "error");
+            toast.error("Andika jibu");
             return;
           }
           const allQuestions = JSON.parse(localStorage.getItem("questions") || "[]");
@@ -793,7 +799,7 @@ toast("Question deleted", "success");
           const updatedSelected = { ...selectedQuestion, messages: [...(selectedQuestion.messages || [{ id: "s0", text: selectedQuestion.question, sender: "student", timestamp: selectedQuestion.createdAt }]), { id: "s" + Date.now(), text: replyMessage, sender: "student", timestamp: new Date().toISOString() }] };
           setSelectedQuestion(updatedSelected);
           setReplyMessage("");
-          toast("Umejibu swali!", "success");
+          toast.success("Umejibu swali!");
         };
 
         const confirmDeleteQuestion = (qId, e) => {
@@ -804,13 +810,13 @@ toast("Question deleted", "success");
         return (
           <div className="space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-body text-emerald-600">{myQuestions.length} conversations</span>
+              <span className="text-sm font-body text-primary">{myQuestions.length} conversations</span>
             </div>
             
             {sameGenderTeachers.length === 0 && (
               <div className="p-6 rounded-2xl bg-yellow-50 border border-yellow-200">
                 <div className="flex items-center gap-3">
-                  <HelpCircle className="w-8 h-8 text-yellow-600" />
+                  <FontAwesomeIcon icon={faCircleQuestion} className="w-8 h-8 text-yellow-600" />
                   <div>
                     <p className="font-medium text-yellow-800">No teachers</p>
                     <p className="text-sm text-yellow-700">No teachers of your gender yet. Please wait.</p>
@@ -825,59 +831,59 @@ toast("Question deleted", "success");
                   <div 
                     key={q.id}
                     onClick={() => setSelectedQuestion(q)}
-                    className="p-4 bg-white rounded-2xl border border-emerald-200 hover:border-emerald-400 hover:shadow-lg transition-all cursor-pointer"
+                    className="p-4 bg-white rounded-2xl border border-gray-200 hover:border-gray-400 hover:shadow-lg transition-all cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                        <GraduationCap className="w-6 h-6 text-emerald-600" />
+                      <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <FontAwesomeIcon icon={faGraduationCap} className="w-6 h-6 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-display font-semibold text-sm text-gray-900 truncate">Question from {new Date(q.createdAt).toLocaleDateString()}</span>
                           <span className={`px-2 py-0.5 rounded-full text-xs ${
-                            q.status === "answered" ? "bg-emerald-100 text-emerald-700" : "bg-yellow-100 text-yellow-700"
+                            q.status === "answered" ? "bg-gray-100 text-gray-700" : "bg-yellow-100 text-yellow-700"
                           }`}>
                             {q.status === "answered" ? "Answered" : "Pending"}
                           </span>
                         </div>
                         <p className="text-sm text-gray-500 truncate">{q.question}</p>
                         {q.answer && (
-                          <p className="text-xs text-emerald-500 mt-1 truncate">Jibu: {q.answer}</p>
+                          <p className="text-xs text-gray-500 mt-1 truncate">Jibu: {q.answer}</p>
                         )}
                       </div>
                       <button 
                         onClick={(e) => confirmDeleteQuestion(q.id, e)}
                         className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
                 ))}
                 
                 {myQuestions.length === 0 && sameGenderTeachers.length > 0 && (
-                  <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200">
+                  <div className="p-6 rounded-2xl bg-gray-50 border border-gray-200">
                     <div className="text-center mb-4">
-                      <MessageCircle className="w-12 h-12 mx-auto mb-2 text-emerald-400" />
-                      <p className="text-lg font-display font-semibold text-emerald-800">Contact Teachers</p>
-                      <p className="text-emerald-600 text-sm">Write your question</p>
+                      <FontAwesomeIcon icon={faComments} className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                      <p className="text-lg font-display font-semibold text-gray-800">Contact Teachers</p>
+                      <p className="text-primary text-sm">Write your question</p>
                     </div>
                     <textarea 
-                      className="w-full p-4 rounded-xl border border-emerald-200 bg-white text-emerald-900 placeholder:text-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 font-body"
+                      className="w-full p-4 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 font-body"
                       rows="3"
                       placeholder="Write your question here..."
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
                     ></textarea>
-                    <Button onClick={sendQuestion} className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-display font-semibold py-3">
+                    <Button onClick={sendQuestion} className="w-full mt-4 bg-primary hover:bg-gray-800 text-white font-display font-semibold py-3">
                       Send Question
                     </Button>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="flex flex-col h-[70vh] bg-[#f5f5f5] rounded-2xl overflow-hidden shadow-lg border border-emerald-200">
-                <div className="bg-emerald-600 p-3 flex items-center justify-between shadow-sm">
+              <div className="flex flex-col h-[70vh] bg-[#f5f5f5] rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+                <div className="bg-primary p-3 flex items-center justify-between shadow-sm">
                   <div className="flex items-center gap-3">
                     <button 
                       onClick={() => setSelectedQuestion(null)}
@@ -899,11 +905,11 @@ toast("Question deleted", "success");
                       const filtered = allQuestions.filter(q => q.id !== activeQuestion.id);
                       localStorage.setItem("questions", JSON.stringify(filtered));
                       setSelectedQuestion(null);
-                      toast("Question deleted", "success");
+                      toast.success("Question deleted");
                     }}
                     className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <FontAwesomeIcon icon={faTrash} className="w-5 h-5" />
                   </button>
                 </div>
                 
@@ -912,7 +918,7 @@ toast("Question deleted", "success");
                     <div key={idx} className={`flex ${msg.sender === "student" ? "justify-end" : "justify-start"}`}>
                       <div className={`max-w-[75%] p-3 rounded-2xl ${
                         msg.sender === "student" 
-                          ? "bg-emerald-500 text-white rounded-br-md" 
+                          ? "bg-primary text-white rounded-br-md" 
                           : "bg-white text-gray-800 rounded-bl-md shadow-sm border border-gray-100"
                       }`}>
                         <p className="text-sm font-body">{msg.text}</p>
@@ -924,7 +930,7 @@ toast("Question deleted", "success");
                   ))}
                 </div>
                 
-                <div className="p-3 bg-white border-t border-emerald-100">
+                <div className="p-3 bg-white border-t border-gray-100">
                   <div className="flex gap-2">
                     <Input 
                       type="text"
@@ -934,8 +940,8 @@ toast("Question deleted", "success");
                       onKeyPress={(e) => e.key === "Enter" && sendReply()}
                       className="flex-1"
                     />
-                    <Button onClick={sendReply} className="bg-emerald-600 hover:bg-emerald-700">
-                      <Send className="w-4 h-4" />
+                    <Button onClick={sendReply} className="bg-primary hover:bg-gray-800">
+                      <FontAwesomeIcon icon={faPaperPlane} className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -951,29 +957,29 @@ toast("Question deleted", "success");
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 relative">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative">
       <div className="absolute inset-0 opacity-[0.02]" 
         style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%231e5128\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/svg%3E")' }}>
       </div>
 
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-emerald-100 z-50 px-4 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100 z-50 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img src={Logo} alt="Logo" className="w-8 h-8 rounded-full" />
-          <span className="font-display font-bold text-emerald-800">Tajweed</span>
+          <span className="font-display font-bold text-gray-800">Tajweed</span>
         </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-emerald-50 transition-colors">
-          {mobileMenuOpen ? <X className="w-6 h-6 text-emerald-800" /> : <Menu className="w-6 h-6 text-emerald-800" />}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+          {mobileMenuOpen ? <FontAwesomeIcon icon={faXmark} className="w-6 h-6 text-gray-800" /> : <FontAwesomeIcon icon={faBars} className="w-6 h-6 text-gray-800" />}
         </button>
       </div>
 
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-white z-40 pt-16 overflow-y-auto">
           <div className="p-4">
-            <div className="flex items-center gap-3 p-4 mb-4 bg-gradient-to-r from-emerald-50 to-emerald-50 rounded-xl border border-emerald-100">
+            <div className="flex items-center gap-3 p-4 mb-4 bg-gray-50 rounded-xl border border-gray-100">
               <img src={Logo} alt="Logo" className="w-12 h-12 rounded-full" />
               <div>
-                <p className="text-xs text-emerald-600 uppercase tracking-wider">Welcome</p>
-                <p className="text-emerald-900 font-display font-semibold">{student.name}</p>
+                <p className="text-xs text-primary uppercase tracking-wider">Welcome</p>
+                <p className="text-gray-900 font-display font-semibold">{student.name}</p>
               </div>
             </div>
             <nav className="space-y-2">
@@ -984,7 +990,7 @@ toast("Question deleted", "success");
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
               >
-                <LogOut className="w-5 h-5" />
+                <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5" />
                 <span className="font-body">Logout</span>
               </button>
             </nav>
@@ -992,12 +998,12 @@ toast("Question deleted", "success");
         </div>
       )}
 
-      <div className="hidden md:flex w-72 bg-white/80 backdrop-blur-sm border-r border-emerald-100/50 p-6 flex-col relative">
-        <div className="flex items-center gap-3 p-4 mb-6 bg-gradient-to-r from-emerald-50 to-emerald-50 rounded-xl border border-emerald-100">
+      <div className="hidden md:flex w-72 bg-white/80 backdrop-blur-sm border-r border-gray-100/50 p-6 flex-col relative">
+        <div className="flex items-center gap-3 p-4 mb-6 bg-gray-50 rounded-xl border border-gray-100">
           <img src={Logo} alt="Logo" className="w-12 h-12 rounded-full" />
           <div>
-            <p className="text-xs text-emerald-600 uppercase tracking-wider">Welcome</p>
-            <p className="text-emerald-900 font-display font-semibold truncate">{student.name}</p>
+            <p className="text-xs text-primary uppercase tracking-wider">Welcome</p>
+            <p className="text-gray-900 font-display font-semibold truncate">{student.name}</p>
           </div>
         </div>
         
@@ -1011,7 +1017,7 @@ toast("Question deleted", "success");
           onClick={handleLogout}
           className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
         >
-          <LogOut className="w-5 h-5" />
+          <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5" />
           <span className="font-body">Logout</span>
         </button>
       </div>
@@ -1019,7 +1025,7 @@ toast("Question deleted", "success");
       <div className="flex-1 p-4 md:p-8 mt-16 md:mt-0 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-emerald-900">
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
               {activeSection === "profile" && "Dashboard"}
               {activeSection === "lessons" && "Lessons"}
               {activeSection === "activities" && "Activities"}
@@ -1027,17 +1033,17 @@ toast("Question deleted", "success");
               {activeSection === "teachers" && "Ask Teacher"}
               {activeSection === "about" && "About"}
             </h1>
-            <p className="text-emerald-700/70 font-body mt-1">Marhala {student.marhala} • Awamu {student.awamu}</p>
+            <p className="text-gray-700/70 font-body mt-1">Marhala {student.marhala} • Awamu {student.awamu}</p>
           </div>
           
           {renderContent()}
         </div>
 
         <Dialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}>
-          <DialogContent className="bg-white rounded-2xl shadow-2xl border border-emerald-100">
+          <DialogContent className="bg-white rounded-2xl shadow-2xl border border-gray-100">
             <DialogHeader>
-              <DialogTitle className="text-emerald-900 flex items-center gap-2">
-                <Trash2 className="w-5 h-5 text-red-500" />
+              <DialogTitle className="text-gray-900 flex items-center gap-2">
+                <FontAwesomeIcon icon={faTrash} className="w-5 h-5 text-red-500" />
                 Delete Question
               </DialogTitle>
               <DialogDescription className="text-gray-600">

@@ -6,11 +6,18 @@ import StudentDashboard from './features/student/components/StudentDashboard';
 import TeacherDashboard from './features/teacher/components/TeacherDashboard';
 import AdminDashboard from './features/admin/components/AdminDashboard';
 import ActivityPage from './features/student/components/ActivityPage';
-import { ToastProvider } from './components/ui/toast';
+import { Toaster, toast } from 'sonner';
 
 function App() {
+  if (typeof window !== 'undefined') {
+    window.toastSuccess = toast.success;
+    window.toastError = toast.error;
+    window.toastWarning = toast.warning;
+  }
+
   return (
-    <ToastProvider>
+    <>
+      <Toaster position="bottom-left" />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
@@ -20,7 +27,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
-    </ToastProvider>
+    </>
   );
 }
 

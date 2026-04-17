@@ -3,7 +3,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Users, MessageCircle, BookOpen, UserCheck, Clock, ChevronRight, Menu, X, Home, GraduationCap, Search, Filter, Send, CheckCircle, AlertCircle, LogOut, User, Mail, Phone, Trash2, Bell } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUsers, faComments, faBookOpen, faUserCheck, faClock, faChevronRight,
+  faBars, faXmark, faHome, faGraduationCap, faSearch, faFilter,
+  faPaperPlane, faCircleCheck, faCircleExclamation, faRightFromBracket,
+  faUser, faEnvelope, faPhone, faTrash, faBell
+} from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/assets/images/logo.jpeg";
 import { useNavigate } from "react-router-dom";
 
@@ -209,11 +215,11 @@ const TeacherDashboard = () => {
   };
 
   const [navItems] = useState([
-    { icon: UserCheck, label: "Students", section: "roster" },
-    { icon: MessageCircle, label: "Inquiries", section: "inquiries", badge: pendingCount },
+    { icon: faUserCheck, label: "Students", section: "roster" },
+    { icon: faComments, label: "Inquiries", section: "inquiries", badge: pendingCount },
   ]);
 
-  const SidebarItem = ({ icon: Icon, label, section, badge }) => (
+  const SidebarItem = ({ icon, label, section, badge }) => (
     <button
       onClick={() => {
         setActiveSection(section);
@@ -221,12 +227,12 @@ const TeacherDashboard = () => {
       }}
       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group ${
         activeSection === section 
-          ? "bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-800 border-l-4 border-emerald-500 shadow-sm" 
-          : "text-emerald-900/70 hover:bg-emerald-50 hover:text-emerald-900"
+          ? "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-800 border-l-4 border-primary shadow-sm" 
+          : "text-gray-900/70 hover:bg-gray-50 hover:text-gray-900"
       }`}
     >
       <div className="flex items-center gap-3">
-        <Icon className={`w-5 h-5 transition-transform duration-300 ${activeSection === section ? 'text-emerald-600' : 'group-hover:scale-110'}`} />
+        <FontAwesomeIcon icon={icon} className={`w-5 h-5 transition-transform duration-300 ${activeSection === section ? 'text-primary' : 'group-hover:scale-110'}`} />
         <span className="font-body font-medium">{label}</span>
       </div>
       {badge > 0 && (
@@ -243,19 +249,19 @@ const TeacherDashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex flex-wrap gap-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-600" />
+                  <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                   <input
                     type="text"
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-4 py-2 rounded-xl border border-emerald-200 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100 font-body text-sm"
+                    className="pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 font-body text-sm"
                   />
                 </div>
                 <select
                   value={selectedMarhala}
                   onChange={(e) => setSelectedMarhala(e.target.value)}
-                  className="px-4 py-2 rounded-xl border border-emerald-200 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100 font-body text-sm"
+                  className="px-4 py-2 rounded-xl border border-gray-200 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 font-body text-sm"
                 >
                   <option value="all">All Marhalat</option>
                   <option value="1">Marhala 1</option>
@@ -270,27 +276,27 @@ const TeacherDashboard = () => {
               {filteredStudents.map((student, idx) => (
                 <div 
                   key={student.id}
-                  className="relative overflow-hidden p-5 rounded-2xl bg-white border border-gray-100 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100 transition-all duration-500"
+                  className="relative overflow-hidden p-5 rounded-2xl bg-white border border-gray-100 hover:border-gray-300 hover:shadow-lg hover:shadow-gray-100 transition-all duration-500"
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-emerald-500 to-emerald-500"></div>
+                  <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary to-primary"></div>
                   
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-100 flex items-center justify-center">
-                        <User className="w-7 h-7 text-emerald-600" />
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gray-100 to-gray-100 flex items-center justify-center">
+                        <FontAwesomeIcon icon={faUser} className="w-7 h-7 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-display font-semibold text-emerald-900 text-lg">{student.name}</h4>
-                        <p className="text-sm text-emerald-700/70 font-body">{student.rgNumber}</p>
+                        <h4 className="font-display font-semibold text-gray-900 text-lg">{student.name}</h4>
+                        <p className="text-sm text-gray-700/70 font-body">{student.rgNumber}</p>
                       </div>
                     </div>
                       <div className="flex flex-wrap items-center gap-4">
-                      <div className="flex items-center gap-2 px-3 py-1 bg-emerald-100 rounded-lg">
-                        <span className="text-xs text-emerald-600 font-body">Marhala</span>
-                        <span className="font-display font-bold text-emerald-700">{student.marhala}</span>
+                      <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-lg">
+                        <span className="text-xs text-primary font-body">Marhala</span>
+                        <span className="font-display font-bold text-gray-700">{student.marhala}</span>
                       </div>
-                      <Button onClick={() => setSelectedStudent(student)} className="px-4 bg-gradient-to-r from-emerald-600 to-emerald-600 hover:from-emerald-700 hover:to-emerald-700 text-white text-sm">
+                      <Button onClick={() => setSelectedStudent(student)} className="px-4 bg-primary hover:bg-gray-800 text-white text-sm">
                         View
                       </Button>
                     </div>
@@ -300,10 +306,10 @@ const TeacherDashboard = () => {
             </div>
 
             {filteredStudents.length === 0 && (
-              <div className="p-8 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
-                <Users className="w-14 h-14 mx-auto mb-4 text-emerald-400" />
-                <p className="text-emerald-800 font-display font-semibold text-lg">No students found</p>
-                <p className="text-emerald-700/70 font-body mt-2">Wanafunzi wanaohitajika watakuwa hapa.</p>
+              <div className="p-8 rounded-2xl bg-gray-50 border border-gray-200 text-center">
+                <FontAwesomeIcon icon={faUsers} className="w-14 h-14 mx-auto mb-4 text-gray-400" />
+                <p className="text-gray-800 font-display font-semibold text-lg">No students found</p>
+                <p className="text-gray-700/70 font-body mt-2">Wanafunzi wanaohitajika watakuwa hapa.</p>
               </div>
             )}
           </div>
@@ -312,7 +318,7 @@ const TeacherDashboard = () => {
 case "inquiries": {
         const counts = (
           <div className="mb-3 text-sm">
-            <span className="text-emerald-700">{pendingCount} maswali yaliyosubiri</span>
+            <span className="text-gray-700">{pendingCount} maswali yaliyosubiri</span>
           </div>
         );
         
@@ -352,23 +358,23 @@ if (inquiry.status === "pending") {
                   }}
                   className={`p-4 cursor-pointer transition-all border-b border-gray-100 ${
                     selectedInquiry?.id === inquiry.id 
-                      ? "bg-emerald-50" 
+                      ? "bg-gray-50" 
                       : "hover:bg-gray-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                      <User className="w-6 h-6 text-emerald-600" />
+                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <FontAwesomeIcon icon={faUser} className="w-6 h-6 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-display font-semibold text-sm text-gray-900 truncate">{inquiry.studentName}</span>
-                        <span className="text-xs text-emerald-500">{inquiry.timestamp}</span>
+                        <span className="text-xs text-gray-500">{inquiry.timestamp}</span>
                       </div>
                       <p className="text-xs text-gray-500 truncate">{inquiry.question}</p>
                     </div>
                     {inquiry.status === "pending" && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-primary flex-shrink-0"></div>
                     )}
                   </div>
                 </div>
@@ -379,15 +385,15 @@ if (inquiry.status === "pending") {
         
         const chat = selectedInquiry && (
           <div className="w-full flex flex-col h-[75vh] bg-[#e5ddd6] rounded-2xl overflow-hidden shadow-lg">
-              <div className="bg-emerald-600 p-3 flex items-center gap-3 shadow-sm">
+              <div className="bg-primary p-3 flex items-center gap-3 shadow-sm">
                 <button 
                   onClick={() => { setSelectedInquiry(null); setShowReplyForm(false); setReplyText(""); }}
                   className="text-white"
                 >
-                  <ChevronRight className="w-5 h-5 rotate-180" />
+                  <FontAwesomeIcon icon={faChevronRight} rotation={180} className="w-5 h-5" />
                 </button>
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+                  <FontAwesomeIcon icon={faUser} className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h4 className="font-display font-bold text-white text-base">{selectedInquiry.studentName}</h4>
@@ -404,8 +410,8 @@ if (inquiry.status === "pending") {
                 {(conversationMessages[selectedInquiry.id] || []).length === 0 ? (
                   <div className="flex justify-start mb-4">
                     <div className="flex items-end gap-2 max-w-[80%]">
-                      <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center flex-shrink-0 self-end">
-                        <User className="w-4 h-4 text-emerald-700" />
+                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 self-end">
+                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-gray-700" />
                       </div>
                       <div className="bg-white px-4 py-2 rounded-2xl rounded-bl-sm rounded-tr-2xl shadow-md">
                         <p className="text-sm text-gray-900 leading-relaxed">{selectedInquiry.question}</p>
@@ -417,8 +423,8 @@ if (inquiry.status === "pending") {
                     msg.sender === "student" ? (
                       <div key={msg.id} className="flex justify-start mb-4">
                         <div className="flex items-end gap-2 max-w-[80%]">
-                          <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center flex-shrink-0 self-end">
-                            <User className="w-4 h-4 text-emerald-700" />
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 self-end">
+                            <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-gray-700" />
                           </div>
                           <div className="bg-white px-4 py-2 rounded-2xl rounded-bl-sm rounded-tr-2xl shadow-md">
                             <p className="text-sm text-gray-900 leading-relaxed">{msg.text}</p>
@@ -428,12 +434,12 @@ if (inquiry.status === "pending") {
                     ) : (
                       <div key={msg.id} className="flex justify-end mb-4 group relative">
                         <div className="flex items-end gap-2 max-w-[80%] flex-row-reverse">
-                          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 self-end">
-                            <Send className="w-4 h-4 text-white" />
+                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 self-end">
+                            <FontAwesomeIcon icon={faPaperPlane} className="w-4 h-4 text-white" />
                           </div>
-                          <div className="bg-emerald-100 px-4 py-2 rounded-2xl rounded-br-sm rounded-tl-2xl shadow-md">
+                          <div className="bg-gray-100 px-4 py-2 rounded-2xl rounded-br-sm rounded-tl-2xl shadow-md">
                             <p className="text-sm text-gray-900 leading-relaxed">{msg.text}</p>
-                            <span className="text-xs text-emerald-600/70 mt-1 block text-right">✓ {msg.timestamp}</span>
+                            <span className="text-xs text-primary/70 mt-1 block text-right">✓ {msg.timestamp}</span>
                             <button 
                               onClick={() => deleteMessage(msg.id)}
                               className="absolute -top-2 -left-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs hidden group-hover:block hover:bg-red-600"
@@ -451,7 +457,7 @@ if (inquiry.status === "pending") {
                   <input
                     type="text"
                     ref={inputRef}
-                    className="message-input w-full px-4 py-2 rounded-full bg-white focus:bg-white border border-transparent focus:border-emerald-300 focus:outline-none text-sm"
+                    className="message-input w-full px-4 py-2 rounded-full bg-white focus:bg-white border border-transparent focus:border-gray-300 focus:outline-none text-sm"
                     placeholder="Type a message..."
                     onChange={(e) => setReplyText(e.target.value)}
                     onKeyDown={(e) => {
@@ -464,9 +470,9 @@ if (inquiry.status === "pending") {
                 <Button 
                   onClick={() => sendMessage(replyText)}
                   disabled={!replyText.trim()}
-                  className="bg-emerald-500 text-white hover:bg-emerald-600 p-3 rounded-full shadow-md"
+                  className="bg-primary text-white hover:bg-primary p-3 rounded-full shadow-md"
                 >
-                  <Send className="w-5 h-5" />
+                  <FontAwesomeIcon icon={faPaperPlane} className="w-5 h-5" />
                 </Button>
               </div>
             </div>
@@ -486,29 +492,29 @@ if (inquiry.status === "pending") {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 relative">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative">
       <div className="absolute inset-0 opacity-[0.02]" 
         style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%231e5128\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/svg%3E")' }}>
       </div>
 
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-emerald-100 z-50 px-4 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100 z-50 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img src={Logo} alt="Logo" className="w-8 h-8 rounded-full" />
-          <span className="font-display font-bold text-emerald-800">Tajweed</span>
+          <span className="font-display font-bold text-gray-800">Tajweed</span>
         </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-emerald-50 transition-colors">
-          {mobileMenuOpen ? <X className="w-6 h-6 text-emerald-800" /> : <Menu className="w-6 h-6 text-emerald-800" />}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+          {mobileMenuOpen ? <FontAwesomeIcon icon={faXmark} className="w-6 h-6 text-gray-800" /> : <FontAwesomeIcon icon={faBars} className="w-6 h-6 text-gray-800" />}
         </button>
       </div>
 
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-white z-40 pt-16 overflow-y-auto">
           <div className="p-4">
-            <div className="flex items-center gap-3 p-4 mb-4 bg-gradient-to-r from-emerald-50 to-emerald-50 rounded-xl border border-emerald-100">
+            <div className="flex items-center gap-3 p-4 mb-4 bg-gray-50 rounded-xl border border-gray-100">
               <img src={Logo} alt="Logo" className="w-12 h-12 rounded-full" />
               <div>
-                <p className="text-xs text-emerald-600 uppercase tracking-wider">Welcome</p>
-                <p className="text-emerald-900 font-display font-semibold">{teacher.name}</p>
+                <p className="text-xs text-primary uppercase tracking-wider">Welcome</p>
+                <p className="text-gray-900 font-display font-semibold">{teacher.name}</p>
               </div>
             </div>
             <nav className="space-y-2">
@@ -519,7 +525,7 @@ if (inquiry.status === "pending") {
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
               >
-                <LogOut className="w-5 h-5" />
+                <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5" />
                 <span className="font-body">Logout</span>
               </button>
             </nav>
@@ -527,12 +533,12 @@ if (inquiry.status === "pending") {
         </div>
       )}
 
-      <div className="hidden md:flex w-72 bg-white/80 backdrop-blur-sm border-r border-emerald-100/50 p-6 flex-col relative">
-        <div className="flex items-center gap-3 p-4 mb-6 bg-gradient-to-r from-emerald-50 to-emerald-50 rounded-xl border border-emerald-100">
+      <div className="hidden md:flex w-72 bg-white/80 backdrop-blur-sm border-r border-gray-100/50 p-6 flex-col relative">
+        <div className="flex items-center gap-3 p-4 mb-6 bg-gray-50 rounded-xl border border-gray-100">
           <img src={Logo} alt="Logo" className="w-12 h-12 rounded-full" />
           <div>
-            <p className="text-xs text-emerald-600 uppercase tracking-wider">Welcome</p>
-            <p className="text-emerald-900 font-display font-semibold truncate">{teacher.name}</p>
+            <p className="text-xs text-primary uppercase tracking-wider">Welcome</p>
+            <p className="text-gray-900 font-display font-semibold truncate">{teacher.name}</p>
           </div>
         </div>
 
@@ -546,7 +552,7 @@ if (inquiry.status === "pending") {
           onClick={handleLogout}
           className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
         >
-          <LogOut className="w-5 h-5" />
+          <FontAwesomeIcon icon={faRightFromBracket} className="w-5 h-5" />
           <span className="font-body">Logout</span>
         </button>
       </div>
@@ -554,12 +560,12 @@ if (inquiry.status === "pending") {
       <div className="flex-1 p-4 md:p-8 mt-16 md:mt-0 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-emerald-900">
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
               {activeSection === "roster" && "Students"}
               {activeSection === "inquiries" && "Inquiries"}
               {activeSection === "lessons" && "Lessons"}
             </h1>
-            <p className="text-emerald-700/70 font-body mt-1">
+            <p className="text-gray-700/70 font-body mt-1">
               {teacher.specialization} • Gender: {teacher.gender === "A" ? "Male" : "Female"}
             </p>
           </div>
@@ -571,16 +577,16 @@ if (inquiry.status === "pending") {
       {selectedStudent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="bg-gradient-to-r from-emerald-500 to-emerald-500 p-6 text-white">
+            <div className="bg-primary p-6 text-white">
               <button 
                 onClick={() => setSelectedStudent(null)}
                 className="absolute top-4 right-4 text-white/80 hover:text-white"
               >
-                <X className="w-6 h-6" />
+                <FontAwesomeIcon icon={faXmark} className="w-6 h-6" />
               </button>
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-                  <GraduationCap className="w-10 h-10 text-white" />
+                  <FontAwesomeIcon icon={faGraduationCap} className="w-10 h-10 text-white" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-display font-bold">{selectedStudent.name}</h2>
@@ -590,26 +596,26 @@ if (inquiry.status === "pending") {
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-emerald-50 rounded-xl">
-                  <p className="text-xs text-emerald-600 uppercase">Marhala</p>
-                  <p className="text-xl font-display font-bold text-emerald-800">{selectedStudent.marhala}</p>
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-xs text-primary uppercase">Marhala</p>
+                  <p className="text-xl font-display font-bold text-gray-800">{selectedStudent.marhala}</p>
                 </div>
-                <div className="p-4 bg-emerald-50 rounded-xl">
-                  <p className="text-xs text-emerald-600 uppercase">Jinsia</p>
-                  <p className="text-xl font-display font-bold text-emerald-800">{selectedStudent.gender === "A" ? "M" : "Mke"}</p>
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <p className="text-xs text-primary uppercase">Jinsia</p>
+                  <p className="text-xl font-display font-bold text-gray-800">{selectedStudent.gender === "A" ? "M" : "Mke"}</p>
                 </div>
               </div>
               <div className="p-4 bg-gray-50 rounded-xl">
                 <p className="text-xs text-gray-500 uppercase mb-1">Nambari ya Simu</p>
-                <p className="text-emerald-800 font-body">{selectedStudent.phoneNumber || "Haijawekwa"}</p>
+                <p className="text-gray-800 font-body">{selectedStudent.phoneNumber || "Haijawekwa"}</p>
               </div>
               <div className="p-4 bg-gray-50 rounded-xl">
                 <p className="text-xs text-gray-500 uppercase mb-1">Alijiunga</p>
-                <p className="text-emerald-800 font-body">{selectedStudent.awamu ? `Awamu ${selectedStudent.awamu}` : "Awamu 5"}</p>
+                <p className="text-gray-800 font-body">{selectedStudent.awamu ? `Awamu ${selectedStudent.awamu}` : "Awamu 5"}</p>
               </div>
               <Button 
                 onClick={() => setSelectedStudent(null)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="w-full bg-primary hover:bg-gray-800 text-white"
               >
                 Funga
               </Button>
@@ -618,10 +624,10 @@ if (inquiry.status === "pending") {
         </div>
       )}
         <Dialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}>
-          <DialogContent className="bg-white rounded-2xl shadow-2xl border border-emerald-100">
+          <DialogContent className="bg-white rounded-2xl shadow-2xl border border-gray-100">
             <DialogHeader>
-              <DialogTitle className="text-emerald-900 flex items-center gap-2">
-                <Trash2 className="w-5 h-5 text-red-500" />
+              <DialogTitle className="text-gray-900 flex items-center gap-2">
+                <FontAwesomeIcon icon={faTrash} className="w-5 h-5 text-red-500" />
                 Delete Question
               </DialogTitle>
               <DialogDescription className="text-gray-600">
